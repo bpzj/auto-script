@@ -58,8 +58,10 @@ mkdir -p ~/Downloads/auto-install
 rm -rf ~/Downloads/auto-install/
 git clone https://github.com/bpzj/auto-install.git ~/Downloads/auto-install
 
-
-path=`pwd`
-echo $path
+# 5. linux 下安装git 服务器
 
 
+
+# 6. mac 安装iterm2
+
+# 7. 安装zsh, 主题ys
