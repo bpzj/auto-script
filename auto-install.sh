@@ -14,7 +14,7 @@ fi
 dist=`uname -a`
 
 
-# 如果是linux系统登录root用户
+# 1. 如果是linux系统登录root用户
 if [ $OS == "Linux" ] ; then
     if [ `whoami` == "root" ] ; then
         echo "root has login"
@@ -24,6 +24,40 @@ if [ $OS == "Linux" ] ; then
     fi
 fi
 
+# 2. macOS先安装 brew 
+if [ $OS == "Darwin" ] ; then
+    cmdNum=`command -v git | grep -w "git" -c`
+    # result 等于0 表示没有找到git 命令，需要安装git，不同系统安装命令不一样
+    if [ $cmdNum -le 0 ]; then
+        echo "Install homebrew"
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    else
+        echo "Homebrew installed"
+    fi
+fi
 
+# 3. 安装git
+result=`command -v git | grep -w "git" -c`
+# result 等于0 表示没有找到git 命令，需要安装git，不同系统安装命令不一样
+if [ $result -le 0 ]; then
+    echo "Install git"
+    
+    if [ $OS == "Darwin" ] ; then
+        brew install git
+    elif [ $OS == "Linux" ] ; then
+        apt-get update
+        apt install git
+    fi
+
+else
+    echo "Git installed"
+fi
+
+# 4. git clone 安装脚本到本地
+mkdir -p ~/Downloads
+git clone https://github.com/bpzj/auto-install.git ~/Downloads/auto-install
+
+path=`pwd`
+echo $path
 
 
