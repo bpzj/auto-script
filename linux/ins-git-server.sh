@@ -38,6 +38,7 @@ file="/etc/ssh/sshd_config"
 line1=`grep -n "^.*AuthorizedKeysFile.*authorized_keys.*" $file | cut -d ":" -f 1`
 echo $line1
     # 如果不匹配，就在文件最后加一行，如果匹配，直接替换
+    # -z 判断长度是否为零，为零 则为真
 if [ -z "$line1" ]; then
     echo "AuthorizedKeysFile .ssh/authorized_keys" | sudo tee -a $file
 else

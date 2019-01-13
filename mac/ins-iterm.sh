@@ -1,8 +1,8 @@
 #!/bin/bash
 
 app=`ls /Applications | grep -i "iterm"`
-if [ -z "$app" ] ; then
-else
+# -z 判断长度是否为零，为零 则为真
+if [ ! -z "$app" ] ; then
     echo "iterm 已安装"
     exit
 fi

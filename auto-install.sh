@@ -54,10 +54,11 @@ else
 fi
 
 # 4. git clone 安装脚本到本地
-path=''$HOME'/Downloads/auto-install'
-mkdir -p "$path"
-rm -rf "$path"
-git clone git@github.com:bpzj/auto-install.git "$path"
+path='/Users/lym/Desktop/auto-install'
+#path=''$HOME'/Downloads/auto-install'
+#mkdir -p "$path"
+#rm -rf "$path"
+#git clone git@github.com:bpzj/auto-install.git "$path"
 
 # 5. linux 下安装git 服务器
 if [ $OS == "Linux" ] ; then
