@@ -1,0 +1,38 @@
+linux 系统安装git服务器
+说明：只是简单git服务器，适合个人使用，无页面
+
+1. 在linux上安装git仓库服务
+    1.1 在linux服务器上运行ins-git-server.sh脚本
+
+        1.1.1 脚本说明（也就是具体步骤）：
+            (1) 登陆root用户 
+            (2) 新建git用户，默认密码dqgq1234，如需修改，改sh脚本
+            (3) 安装git程序，注意，不同发行版linux命令不一样，默认apt install git
+            (4) 修改 sshd 默认配置，允许密钥登陆，重启sshd服务
+            (5) 创建 /home/git/repository/, /home/git/.ssh/ 目录，并修改owner为git
+                创建 /home/git/.ssh/authorized_keys 文件，并添加默认公钥，可自行修改
+                修改 /home/git/.ssh/authorized_keys 和 /home/git/.ssh 的 mod
+            (6) 取消git用户远程登陆，暂时有问题
+
+    1.2 在linux服务器上，新建一个仓库
+            git init --bare /home/git/repository/test.git  初始化一个仓库
+            chown -R git:git /home/git/repository/test.git  修改owner
+
+2. 在本地电脑clone仓库
+    1.1 复制密钥 id_rsa 为 ~/.ssh/id_rsa 文件
+    1.2 修改 ~/.ssh/id_rsa 到 mod 为 400:  chmod 400 ~/.ssh/id_rsa
+    1.3 clone 命令: git clone git@ip地址:/home/git/repository/test.git
+         不同git版本有问题，需要在clone之后进行以下步骤
+         https://stackoverflow.com/questions/21609781/why-call-git-branch-unset-upstream-to-fixup
+                git commit  先提交一些东西到本地仓库
+                git branch --unset-upstream  解决 upstream is gone 到问题
+                git checkout master     切换到master分支，无意外到此解决
+                git push                可以push成功
+
+3. 每建一个git仓库就要重复第2步 
+
+**重要：**
+** 在linux 服务器 修改 .ssh 目录的权限为 700  **
+** 在linux 服务器 修改 .ssh/authorized_keys 文件的权限为 600  **
+** 在本地 修改 ~/.ssh/id_rsa 文件权限
+

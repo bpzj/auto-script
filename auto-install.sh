@@ -54,13 +54,16 @@ else
 fi
 
 # 4. git clone 安装脚本到本地
-mkdir -p ~/Downloads/auto-install
-rm -rf ~/Downloads/auto-install/
-git clone https://github.com/bpzj/auto-install.git ~/Downloads/auto-install
+path=''$HOME'/Downloads/auto-install'
+echo "$path"
+# mkdir -p "$path"
+#rm -rf "$path"
+#git clone https://github.com/bpzj/auto-install.git "$path"
 
 # 5. linux 下安装git 服务器
-
-
+if [ $OS == "Linux" ] ; then
+#    bash ./linux/ins-git-server.sh
+fi
 
 # 6. mac 安装iterm2
 
