@@ -1,5 +1,13 @@
 #!/bin/bash
 
+app=`ls /Applications | grep -i "iterm"`
+if [ -z "$app" ] ; then
+else
+    echo "iterm 已安装"
+    exit
+fi
+
+# todo 未完成
 itermZip=`ls | grep -i "iterm.*zip"`
 if [ -z "$itermZip" ]; then
     curl -O https://iterm2.com/downloads/stable/iTerm2-3_2_6.zip

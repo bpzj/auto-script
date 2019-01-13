@@ -66,7 +66,7 @@ fi
 
 # 6. mac 安装iterm2
 if [ $OS == "Darwin" ] ; then
-    bash ''path'/mac/ins-iterm'
+    bash ''$path'/mac/ins-iterm.sh'
 fi
 
 # 7. 安装zsh, 主题ys
