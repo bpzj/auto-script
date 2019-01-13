@@ -54,8 +54,10 @@ else
 fi
 
 # 4. git clone 安装脚本到本地
-mkdir -p ~/Downloads
+mkdir -p ~/Downloads/auto-install
+rm -rf ~/Downloads/auto-install/
 git clone https://github.com/bpzj/auto-install.git ~/Downloads/auto-install
+
 
 path=`pwd`
 echo $path
