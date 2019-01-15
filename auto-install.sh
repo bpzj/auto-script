@@ -3,14 +3,16 @@
 # 通用校验输入的方法
 # 全局变量
 input="N"
-while true; do
-    read -p "Do you want to install MongoDB?" yn
-    case $yn in
-        [Yy]* ) make install; break;;
-        [Nn]* ) exit;;
-        * ) echo "Please enter Y/y/N/n .";;
-    esac
-done
+function checkInput() {
+    while true; do
+        read -t 60 -p "$1" input
+        case $input in
+            [YyNn]* ) break;;
+            * ) echo "Please enter Y/y/N/n .";;
+        esac
+    done
+}
+
 
 # 获取当前系统
 OS=`uname -s`
@@ -77,12 +79,14 @@ if [ $OS == "Linux" ] ; then
     bash ''$path'/linux/ins-git-server.sh'
 fi
 
-# 6. mac 安装iterm2
-if [ $OS == "Darwin" ] ; then
-    bash ''$path'/mac/ins-iterm.sh'
-fi
+# 6. mac 安装iterm2（老崩溃，暂不安装）
+#if [ $OS == "Darwin" ] ; then
+#    bash ''$path'/mac/ins-iterm.sh'
+#fi
 
 # 7. 安装zsh, 主题ys
 
 
 # 8. 是否按照mongodb
+checkInput "是否要安装MongoDB: ";
+
