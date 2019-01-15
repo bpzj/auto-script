@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# 通用校验输入的方法
 # 全局变量
 input="N"
+# 通用校验输入的方法
 function checkInput() {
     while true; do
         read -t 60 -p "$1" input
@@ -13,7 +13,7 @@ function checkInput() {
     done
 }
 
-
+# = 与 == 在 [ ] 中表示判断(字符串比较)时是等价的
 # 获取当前系统
 OS=`uname -s`
 if [ $OS == "Darwin" ];then
@@ -89,4 +89,9 @@ fi
 
 # 8. 是否按照mongodb
 checkInput "是否要安装MongoDB: ";
+if [ $input == "Y" -o $input = "y" ] ; then
+    if [ $OS == "Darwin" ] ; then
+        bash './mac/ins-mongodb.sh'
+    fi
+fi
 
