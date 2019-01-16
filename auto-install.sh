@@ -55,7 +55,7 @@ result=`command -v git | grep -w "git" -c`
 # result 等于0 表示没有找到git 命令，需要安装git，不同系统安装命令不一样
 if [ $result -le 0 ]; then
     echo "Install git"
-    
+
     if [ $OS == "Darwin" ] ; then
         brew install git
     elif [ $OS == "Linux" ] ; then
@@ -88,10 +88,22 @@ fi
 
 
 # 8. 是否按照mongodb
-checkInput "是否要安装MongoDB: ";
-if [ $input == "Y" -o $input = "y" ] ; then
-    if [ $OS == "Darwin" ] ; then
-        bash './mac/ins-mongodb.sh'
+result=`command -v mongod | grep -w "mongod" -c`
+if [ $result -le 0 ]; then
+
+    checkInput "是否要安装MongoDB: ";
+    if [ $input == "Y" -o $input = "y" ] ; then
+        if [ $OS == "Darwin" ] ; then
+            bash './mac/ins-mongodb.sh'
+        elif [ $OS == "Linux" ] ; then
+            apt-get update
+            apt install git
+        fi
     fi
+
+else
+    echo "mongodb installed"
 fi
+
+
 
