@@ -86,6 +86,17 @@ fi
 
 # 7. 安装zsh, 主题ys
 
+# 8. 是否安装 open-jdk 11
+checkInput "是否要安装 open jdk 11: ";
+#if [ $input == "Y" -o $input = "y" ] ; then
+#    if [ $OS == "Darwin" ] ; then
+#        bash './mac/ins-mongodb.sh'
+#    elif [ $OS == "Linux" ] ; then
+#        apt-get update
+#        apt install git
+#    fi
+#fi
+
 
 # 8. 是否按照mongodb
 result=`command -v mongod | grep -w "mongod" -c`
