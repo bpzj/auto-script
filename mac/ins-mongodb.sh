@@ -26,4 +26,4 @@ if [[ ! ${mongodbDir} == "mongodb" ]] ; then
 fi
 
 cp -r ''${path}'/'${mongodbDir}'/' /usr/local/Cellar/mongodb/
-ln -s /usr/local/Cellar/mongodb/bin/mongod/bin/mongod  /usr/local/bin/mongod
+ln -s /usr/local/Cellar/mongodb/bin/mongod  /usr/local/bin/mongod
