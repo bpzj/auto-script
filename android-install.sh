@@ -45,6 +45,10 @@ else
     echo "Git installed"
 fi
 
+# 2. 创建一个 文件夹
+shared=''$HOME'/storage/shared'
+mkdir -p ''${shared}'/0_file'
+
 # 4. git clone 安装脚本到本地
 #path='/Users/lym/Desktop/auto-install'
 path=''$HOME'/Downloads/auto-install'
