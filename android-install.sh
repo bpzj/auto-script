@@ -39,11 +39,8 @@ result=`command -v git | grep -w "git" -c`
 # result 等于0 表示没有找到git 命令，需要安装git，不同系统安装命令不一样
 if [ $result -le 0 ]; then
     echo "Install git"
-    if [ $OS == "Android" ] ; then
-        apt-get update
-        apt install git
-    fi
-
+    pkg update && pkg upgrade
+    pkg install git
 else
     echo "Git installed"
 fi
@@ -55,10 +52,6 @@ path=''$HOME'/Downloads/auto-install'
 #rm -rf "$path"
 #git clone git@github.com:bpzj/auto-install.git "$path"
 
-# 5. linux 下安装git 服务器
-if [ $OS == "Linux" ] ; then
-    bash ''$path'/linux/ins-git-server.sh'
-fi
 
 
 # 7. 安装zsh, 主题ys
