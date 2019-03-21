@@ -48,7 +48,7 @@ fi
 # 2. 创建一个名为 0_file 的文件夹，并建一个软连接
 shared=''$HOME'/storage/shared'
 cd $shared && mkdir -p '0_file'
-ln -s ''$shared'/0_file' '0_file'
+cd $HOME && ln -s "$shared/0_file" 0_file
 
 
 # 4. git clone 安装脚本到本地
