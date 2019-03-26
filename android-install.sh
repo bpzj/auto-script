@@ -58,11 +58,11 @@ pkg install clang
 pkg install libxml2
 pkg install libxml2-dev
 pkg install libxml2-util
-apt install libxslt
-apt install libxslt-dev
+pkg install libxslt
+pkg install libxslt-dev
 pip install lxml
 
-apt install libzmq
+pkg install libzmq
 apt install libzmq-dev
 pip install cython
 pip install pyzmq
