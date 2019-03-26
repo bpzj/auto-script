@@ -77,6 +77,10 @@ pkg install openssl-dev
 pkg install openssl-tool
 pip install pytdx
 
+pkg install libjpeg-turbo-dev
+pip install Pillow
+
+
 
 
 # 7. 安装zsh, 主题ys
