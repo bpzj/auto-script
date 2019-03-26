@@ -52,12 +52,30 @@ cd $HOME && rm -f "0_file" && ln -s "$shared/0_file" "0_file"
 # 2.1 创建 Tim 接收文件夹的软连接
 cd $HOME && rm -f "tim" && ln -s "$shared/tencent/TIMfile_recv" "tim"
 
-# 4. git clone 安装脚本到本地
-#path='/Users/lym/Desktop/auto-install'
-path=''$HOME'/Downloads/auto-install'
-#mkdir -p "$path"
-#rm -rf "$path"
-#git clone git@github.com:bpzj/auto-install.git "$path"
+# 4. 安装 python、ipython、tushare、pytdx
+
+pkg install clang
+pkg install libxml2
+pkg install libxml2-dev
+pkg install libxml2-util
+apt install libxslt
+apt install libxslt-dev
+pip install lxml
+
+apt install libzmq
+apt install libzmq-dev
+pip install cython
+pip install pyzmq
+
+pip install tushare
+
+pkg install libffi
+pkg install libffi-dev
+pip install cffi
+pkg install openssl
+pkg install openssl-dev
+pkg install openssl-tool
+pip install pytdx
 
 
 
