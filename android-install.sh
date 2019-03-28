@@ -52,7 +52,7 @@ cd $HOME && rm -f "0_file" && ln -s "$shared/0_file" "0_file"
 # 2.1 创建 Tim 接收文件夹的软连接
 cd $HOME && rm -f "tim" && ln -s "$shared/tencent/TIMfile_recv" "tim"
 
-# 4. 安装 python、ipython、tushare、pytdx
+# 4. 安装 python、ipython、tushare、pytdx、Pillow
 
 pkg install clang
 pkg install libxml2
