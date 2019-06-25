@@ -18,7 +18,11 @@
 4、安装WSL
     cdm中输入
         LxRunOffline i -n <安装名称> -d <安装路径> -f <安装文件>
+        LxRunOffline.exe i -n debian -d "D:\debian" -f ""
     其中安装名称可以自定义，安装路径为自定义安装路径，安装文件为上一步解压后的文件中的install.tar.gz的路径，回车后等待安装完成。
+    
+    卸载：
+        LxRunOffline.exe ui -n debian
 
 5、备注
 若系统中安装不止一个WSL,则可以通过

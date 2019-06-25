@@ -74,11 +74,3 @@ if [ $input == "9" ] ; then
     tail -f /home/nginx/webapps/nohup.out
 fi
 
-
-
-
-
-#kill -9 $(ps -ef | grep life-main-service|grep -v grep|awk '{print $2}')
-#nohup java -Xmx1024m -XX:MaxPermSize=128M -jar /u02/tomcat/life/les/life-main-service.jar --server.port=8080 --spring.application.name=SC509-LESUPPORT --spring.profiles.active=dev -Dfile.encoding=UTF-8 > /u02/tomcat/life/les/nohup.out &
-#nohup java -jar /u02/tomcat/life/les/life-main-service.jar --server.port=8080 --spring.profiles.active=dev > /u02/tomcat/life/les/nohup.out &
-#tail -f /u02/tomcat/life/les/nohup.out
