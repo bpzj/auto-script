@@ -2,10 +2,11 @@
 
 input="0"
 path=`pwd | cat`
+echo $path
 
-jarFile=`find . -maxdepth 1 -name *.jar`
-
+jarFile=`find $path -maxdepth 1 -name '*.jar'`
 echo $jarFile
+
 
 yml=`ps -ef | grep java | grep -v grep | awk -F'active=' '{print $2}' | awk 'NR==1{print $1}'`
 
