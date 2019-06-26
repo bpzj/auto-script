@@ -5,7 +5,7 @@
 
 2. 下载linux安装包：
     官方提供（下载页面附于此处https://docs.microsoft.com/en-us/windows/wsl/install-manual）
-    
+        
     2.1 将下载的linux包的后缀由.Appx改为.zip，并解压
 
 

@@ -3,23 +3,12 @@
 input="0"
 path=`pwd | cat`
 
-echo $path
-echo "重启 followup   ：2"
-echo "重启 cdi        ：3"
-echo "重启 kb         ：4"
-echo "重启 prescription   ：5"
+jarFile=`find . -maxdepth 1 -name *.jar`
 
-echo ""
-echo "重启 cdi-engine     ：6"
-echo "重启 outward        ：7"
+echo $jarFile
 
-echo ""
-echo "重启 sys    ：8"
-echo "重启 his    ：9"
+yml=`ps -ef | grep java | grep -v grep | awk -F'active=' '{print $2}' | awk 'NR==1{print $1}'`
 
-yml=`ps -ef | grep java |grep -v grep|awk '{print $11}'|awk -F"=" 'NR==1{print $2}'`
-
-checkInput "请输入要重启的项目: "
 if [ $input == "1" ] ; then
     kill -9 $(ps -ef | grep cdm-basic |grep -v grep|awk '{print $2}')
     nohup java -jar /home/nginx/webapps/cdm-basic-1.0.0.jar --spring.profiles.active=$yml > /home/nginx/webapps/nohup.out &

@@ -86,6 +86,7 @@ fi
 
 # 7. 安装zsh, 主题ys
 
+
 # 8. 是否安装 open-jdk 11
 checkInput "是否要安装 open jdk 11: ";
 #if [ $input == "Y" -o $input = "y" ] ; then
@@ -115,6 +116,8 @@ if [ $result -le 0 ]; then
 else
     echo "mongodb installed"
 fi
+
+# 9.是否安装 v2ray server
 
 
 
