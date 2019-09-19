@@ -23,6 +23,7 @@
     
     卸载：
         LxRunOffline.exe ui -n debian
+        LxRunOffline.exe ui -n ubuntu
 
 5、备注
 若系统中安装不止一个WSL,则可以通过
