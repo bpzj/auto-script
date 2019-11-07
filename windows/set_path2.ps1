@@ -36,6 +36,7 @@ else {
 }
 
 
+
 #创建环境变量
 Function Create-EnvVar
 {param([Parameter(Mandatory=$true)] $Name, $Value)
@@ -49,35 +50,46 @@ Function Append-PATH
 {param ($Value)
 
     $OldValue = [environment]::GetEnvironmentVariable("Path",[System.EnvironmentVariableTarget]::Machine)
-    # 如果要添加的值中含有 %，认为用到了其他环境变量
-    if($Value.Contains("%")){
-        $Base = $Value.Split("%")[1]
-        # 从用户变量和系统变量同时查找
-        $BaseReal = [environment]::GetEnvironmentVariable($Base)
-        $RealValue = $Value.Split("%")[0]+$BaseReal+$Value.Split("%")[2]
-        if($OldValue.Contains($RealValue)){
-            Write-Host "PATH contains" $Value
-            return;
-        }
-    }  
-   
+    $ItemArray = $Value.Split(";")
     
-    if($OldValue.Contains($Value)){
-        Write-Host "PATH contains" $Value
-    } else {
-        if($OldValue.Trim().EndsWith(";")){
-            $NewValue=$OldValue+$Value
-        } else{
-            $NewValue=$OldValue+";"+$OldValue
+    $Value="%JAVA_HOME%\bin;D:\Program Files (Dev)\Git\bin"
+    $ItemArray = $Value.Split(";")
+    
+    for($i=0; $i -lt $ItemArray.Length; $i++) {
+        $Item = $ItemArray[$i]
+        # 如果要添加的值中含有 %，认为用到了其他环境变量
+        if($Item.Contains("%")){
+            $Base = $Item.Split("%")[1]
+            # 从用户变量和系统变量同时查找
+            $BaseReal = [environment]::GetEnvironmentVariable($Base)
+            $RealValue = $Item.Split("%")[0]+$BaseReal+$Item.Split("%")[2]
+            if($OldValue.Contains($RealValue)){
+                $OldValue= $OldValue.Replace($RealValue,$Item)
+                Write-Host "PATH contains" $Item
+                continue;
+            }
         }
-        [Environment]::SetEnvironmentVariable("Path", $NewValue, [System.EnvironmentVariableTarget]::Machine )
+
+        if($OldValue.Contains($Item)){
+            Write-Host "PATH contains" $Item
+        } else {
+            if($OldValue.Trim().EndsWith(";")){
+                $OldValue=$OldValue+$Item
+            } else {
+                $OldValue=$OldValue+";"+$Item
+            }
+        
+        }
     }
+
+    [Environment]::SetEnvironmentVariable("Path", $OldValue, [System.EnvironmentVariableTarget]::Machine )
 }
 
 
+Create-EnvVar -Name "M2_HOME" -Value "D:\Program Files (Dev)\Maven\repository"
 Create-EnvVar -Name "JAVA_HOME" -Value "D:\Program Files (Dev)\Java\jdk1.8.0_201"
-Append-PATH -Value "%JAVA_HOME%\bin"
-Append-PATH -Value "D:\Program Files (Dev)\Git\bin"
+Append-PATH -Value "%JAVA_HOME%\bin;D:\Program Files (Dev)\Git\bin"
+
 
 # read-host
 pause
