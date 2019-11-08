@@ -47,16 +47,12 @@ Function Create-EnvVar
 
 #在现有的环境变量后添加值
 Function Append-PATH
-{param ($Value)
+{param ($Paths)
 
     $OldValue = [environment]::GetEnvironmentVariable("Path",[System.EnvironmentVariableTarget]::Machine)
-    $ItemArray = $Value.Split(";")
-    
-    $Value="%JAVA_HOME%\bin;D:\Program Files (Dev)\Git\bin"
-    $ItemArray = $Value.Split(";")
-    
-    for($i=0; $i -lt $ItemArray.Length; $i++) {
-        $Item = $ItemArray[$i]
+    $flag = 0
+    for($i=0; $i -lt $Paths.Length; $i++) {
+        $Item = $Paths[$i]
         # 如果要添加的值中含有 %，认为用到了其他环境变量
         if($Item.Contains("%")){
             $Base = $Item.Split("%")[1]
@@ -73,6 +69,7 @@ Function Append-PATH
         if($OldValue.Contains($Item)){
             Write-Host "PATH contains" $Item
         } else {
+            $flag = 1
             if($OldValue.Trim().EndsWith(";")){
                 $OldValue=$OldValue+$Item
             } else {
@@ -82,14 +79,33 @@ Function Append-PATH
         }
     }
 
-    [Environment]::SetEnvironmentVariable("Path", $OldValue, [System.EnvironmentVariableTarget]::Machine )
+    if($flag -eq 1){
+        [Environment]::SetEnvironmentVariable("Path", $OldValue, [System.EnvironmentVariableTarget]::Machine )
+    }
 }
 
 
+
+Create-EnvVar -Name "GRADLE_USER_HOME" -Value "D:\Program Files (Dev)\Maven\gradleRepository"
 Create-EnvVar -Name "M2_HOME" -Value "D:\Program Files (Dev)\Maven\repository"
 Create-EnvVar -Name "JAVA_HOME" -Value "D:\Program Files (Dev)\Java\jdk1.8.0_201"
-Append-PATH -Value "%JAVA_HOME%\bin;D:\Program Files (Dev)\Git\bin"
+
+$paths = @(
+"%JAVA_HOME%\bin",
+"D:\Program Files (Dev)\Git\bin",
+"D:\Android\sdk\platform-tools",
+"D:\Program Files (Dev)\Python37",
+"D:\Program Files (Dev)\Python37\Scripts"
+)
+
+
+Append-PATH -Paths $paths
+
+#Append-PATH -Value "D:\Program Files (Dev)\Git\bin"
+#Append-PATH -Value "D:\Android\sdk\platform-tools"
+#Append-PATH -Value "D:\Program Files (Dev)\Python37"
+#Append-PATH -Value "D:\Program Files (Dev)\Python37\Scripts"
 
 
 # read-host
-pause
+#pause
