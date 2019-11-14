@@ -1,0 +1,2 @@
+复制当前目录的路径到粘贴板
+    cmd.exe /c set/p="%cd%"<nul | clip

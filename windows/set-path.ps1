@@ -89,6 +89,7 @@ Function Append-PATH
 Create-EnvVar -Name "GRADLE_USER_HOME" -Value "D:\Program Files (Dev)\Maven\gradleRepository"
 Create-EnvVar -Name "M2_HOME" -Value "D:\Program Files (Dev)\Maven\repository"
 Create-EnvVar -Name "JAVA_HOME" -Value "D:\Program Files (Dev)\Java\jdk1.8.0_201"
+Create-EnvVar -Name "ANDROID_HOME" -Value "D:\Android\sdk"
 
 $paths = @(
 "%JAVA_HOME%\bin",
@@ -101,11 +102,7 @@ $paths = @(
 
 Append-PATH -Paths $paths
 
-#Append-PATH -Value "D:\Program Files (Dev)\Git\bin"
-#Append-PATH -Value "D:\Android\sdk\platform-tools"
-#Append-PATH -Value "D:\Program Files (Dev)\Python37"
-#Append-PATH -Value "D:\Program Files (Dev)\Python37\Scripts"
 
 
 # read-host
-#pause
+pause
