@@ -8,7 +8,7 @@ def deploy():
     client = SSHClient()
     client.set_missing_host_key_policy(AutoAddPolicy)
     client.connect(hostname='10.135.52.138', port=22, username='cuiyang06', password='Pass123456')
-    stdin, stdout, stderr = client.exec_command('ls -l')
+    stdin, stdout, stderr = client.exec_command('7')
     print(stdin, stdout, stderr)
     client.close()
     pass
