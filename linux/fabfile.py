@@ -1,4 +1,4 @@
-""" 适用于 centos7 amd64  """
+""" 使用已废弃的fabric3，适用于 centos7 amd64  """
 from fabric.api import env, run
 from fabric.operations import sudo
 from fabric.colors import *
