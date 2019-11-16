@@ -1,0 +1,11 @@
+{
+  "demo": {
+    "remote_host": "127.0.0.1",
+    "port": 22,
+    "user": "demo",
+    "password": "demo",
+    "local_path": "",
+    "remote_path": "",
+    "deploy_command": ""
+  }
+}
