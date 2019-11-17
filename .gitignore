@@ -3,4 +3,4 @@
 *.iml
 *.swp
 *.jar
-deploy_machine.json
+/linux/deploy/deploy_machine_mine.json

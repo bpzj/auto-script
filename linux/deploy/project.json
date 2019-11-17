@@ -1,11 +1,8 @@
 {
   "demo": {
-    "remote_host": "127.0.0.1",
-    "port": 22,
-    "user": "demo",
-    "password": "demo",
-    "local_path": "",
-    "remote_path": "",
+    "package_command_path": "C:\\Users\\bpzj\\Desktop\\work-code\\java-work-experience",
+    "local_file_path": "",
+    "remote_file_path": "",
     "deploy_command": ""
   }
 }
