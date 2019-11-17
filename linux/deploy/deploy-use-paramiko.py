@@ -8,13 +8,13 @@ import paramiko
 
 java_exe = u"\"D:\\Program Files (Dev)\\Java\\jdk1.8.0_201\\bin\\java.exe\""
 mvn_exe = r'''"D:\Program Files (Dev)\Maven\apache-maven-3.5.4\bin\mvn.cmd"'''
-
+current = os.path.abspath(".")
 
 # mvn_exe = u"\"D:\\Program Files (Dev)\\Maven\\apache-maven-3.6.0\\bin\\mvn.cmd\""
 
 
 def connect(dest) -> paramiko.SSHClient:
-    j = json.load(open(os.path.join(os.path.abspath('.'), 'deploy_machine_mine.json')))
+    j = json.load(open(os.path.join(current, 'deploy_machine_mine.json')))
     m = j.get(dest)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
@@ -23,15 +23,14 @@ def connect(dest) -> paramiko.SSHClient:
 
 
 def local_package(project):
-    p = json.load(open(os.path.join(os.path.abspath('.'), 'project.json')))
+    p = json.load(open(os.path.join(current, 'project.json')))
     proj = p.get(project)
     os.chdir(proj.get('package_command_path'))
-    os.system(mvn_exe + " package -Dmaven.test.skip=true")
-    os.chdir(os.path.abspath("."))
+    # os.system(mvn_exe + " package -Dmaven.test.skip=true")
 
 
 def upload_file(ssh: paramiko.SSHClient, project: str) -> paramiko.SFTPClient:
-    p = json.load(open(os.path.join(os.path.abspath('.'), 'project.json')))
+    p = json.load(open(os.path.join(current, 'project.json')))
     proj = p.get(project)
     f = ssh.open_sftp()
     # sftp 的 put命令，需要在 remotepath 中，指定文件的名字
@@ -43,7 +42,7 @@ def upload_file(ssh: paramiko.SSHClient, project: str) -> paramiko.SFTPClient:
 def deploy(dest, project):
     paramiko.util.log_to_file('./log.log')
     local_package(project)  # 本地打包项目
-    ssh = connect(dest)     # 连接远程
+    ssh = connect(dest)  # 连接远程
     # upload_file(ssh, project)
 
     # 建立交互式shell连接
