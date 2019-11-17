@@ -1,11 +1,19 @@
 """ 适用于部署 jdk maven项目 """
+import json
+import os
 import time
 import sys
+import paramiko
 
 
-def deploy():
-    import paramiko
-    paramiko.util.log_to_file('./test')
+def connect(dest):
+    m = json.load(os.path.join(os.path.abspath("."), "deploy_machine.json"))
+    return m.get(dest)
+
+
+def deploy(dest, project):
+    ssh = connect(dest)
+    paramiko.util.log_to_file('./log.log')
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     ssh.connect(hostname='10.135.52.138', port=22, username='cuiyang06', password='')
@@ -45,5 +53,5 @@ def read_out(chan):
 
 
 if __name__ == '__main__':
-    deploy()
+    deploy("aliyun", "demo")
     # test()
