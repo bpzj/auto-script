@@ -11,6 +11,7 @@ def push_grammar_project():
     lines = ps.stdout.readlines()
     time = str(lines)[str(lines).index("Date")+8:str(lines).index("Date")+27].strip()
     sys.stdout.write(time)
+    sys.stdout.flush()
 
 
 if __name__ == '__main__':
