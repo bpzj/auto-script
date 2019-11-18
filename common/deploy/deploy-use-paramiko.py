@@ -53,7 +53,7 @@ def deploy(dest, project):
     # if read_out(chan)
     # send_and_result(chan, '5')
     # send_and_result(chan, 'cd ./webapps')
-    # send_and_result(chan, 'bash ./restart.sh')
+    # send_and_result(chan, 'bash ./restart-java-project.sh')
     # send_and_result(chan, '4')
     # send_and_result(chan, 'y')
 
