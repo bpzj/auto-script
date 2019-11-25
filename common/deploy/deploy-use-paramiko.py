@@ -8,7 +8,7 @@ import paramiko
 
 java_exe = u"\"D:\\Program Files (Dev)\\Java\\jdk1.8.0_201\\bin\\java.exe\""
 mvn_exe = r'''"D:\Program Files (Dev)\Maven\apache-maven-3.5.4\bin\mvn.cmd"'''
-current = os.path.abspath(".")
+current = os.path.dirname(os.path.abspath(__file__))
 
 # mvn_exe = u"\"D:\\Program Files (Dev)\\Maven\\apache-maven-3.6.0\\bin\\mvn.cmd\""
 

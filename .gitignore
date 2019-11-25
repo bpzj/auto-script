@@ -4,3 +4,5 @@
 *.swp
 *.jar
 /common/deploy/deploy_machine_mine.json
+/.vs
+*.log
