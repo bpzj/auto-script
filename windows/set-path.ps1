@@ -99,7 +99,8 @@ $paths = @(
 "D:\Android\sdk\platform-tools",
 "D:\Program Files (Dev)\Python37",
 "D:\Program Files (Dev)\Python37\Scripts",
-"D:\Program Files (Dev)\Maven\apache-maven-3.6.0\bin"
+"D:\Program Files (Dev)\Maven\apache-maven-3.6.0\bin",
+"D:\Program Files (Dev)\Java\jdk-11.0.1\bin"
 )
 
 Append-PATH -Paths $paths

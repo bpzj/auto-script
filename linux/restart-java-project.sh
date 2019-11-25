@@ -1,7 +1,7 @@
 #!/bin/bash
 
 count=`find . -maxdepth 1 -name '*.jar'|wc -l`
-if [ $count -le 0 ] ; then
+if [ "$count" -le 0 ] ; then
     echo "脚本所在目录下没有jar文件"
     exit 0
 fi
@@ -31,7 +31,7 @@ function checkNum() {
 }
 echo ""
 checkNum "请输入要启动的项目: "
-while [ $num -gt $count ]
+while [ "$num" -gt "$count" ]
 do
     echo "不存在数字对应的项目"
     checkNum "请输入要启动的项目: "
