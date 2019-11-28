@@ -56,7 +56,6 @@ else
 fi
 line2=`grep -n "^.*PubkeyAuthentication.*yes.*" $file | cut -d ":" -f 1`
 
-
     # 如果不匹配，就在上面的那行前边插入
 line3=`grep -n "^.*RSAAuthentication.*yes.*" $file | cut -d ":" -f 1`
 echo $line3
@@ -67,6 +66,7 @@ else
 fi
     # 重启sshd服务
 sudo service sshd restart
+
 
 # 5. 创建 /home/git/repository 目录, /home/git/.ssh目录，authorized_keys文件
 mkdir -p /home/git/repository
