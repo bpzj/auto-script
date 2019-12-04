@@ -1,4 +1,8 @@
 #!/bin/bash
+rm /root/.ssh/authorized_keys
+curl "https://raw.githubusercontent.com/bpzj/script/master/ssh/id_rsa.pub" >> /root/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+chmod 700 ~/.ssh 
 
 # 4. 修改 /etc/ssh/sshd_config 配置文件
 file="/etc/ssh/sshd_config"
