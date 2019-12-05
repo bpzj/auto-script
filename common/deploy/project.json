@@ -1,8 +1,6 @@
 {
   "demo": {
     "package_command_path": "C:\\Users\\bpzj\\Desktop\\all-code\\java-work-experience",
-    "local_file_path": "",
-    "remote_file_path": "",
-    "deploy_command": ""
+    "package_command": "\"D:\\Program Files (Dev)\\Maven\\apache-maven-3.6.0\\bin\\mvn.cmd\" package -Dmaven.test.skip=true"
   }
 }

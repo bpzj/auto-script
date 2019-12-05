@@ -1,0 +1,13 @@
+{
+  "virtual-box": {
+    "host": "192.168.56.103",
+    "port": 22,
+    "username": "root",
+    "password": "4260",
+    "select_ip": "127.0.0.1",
+    "local_file_path": "C:\\Users\\bpzj\\Desktop\\all-code\\java-work-experience\\web\\target\\web-0.0.1.jar",
+    "remote_file_path": "/root/web-0.0.1.jar",
+    "deploy_cmd_path": "/root",
+    "deploy_cmd": "java -jar web-0.0.1.jar"
+  }
+}
