@@ -55,5 +55,5 @@ fi
 # 是否安装 open-jdk 8
 checkInput "Do you want to install open jdk 8: ";
 #if [ "$input" == "Y" -o "$input" = "y" ] ; then
-  "$ins_pre" install openjdk-8-jre-headless
+  "$ins_pre" install openjdk-8-jdk-headless
 #fi
