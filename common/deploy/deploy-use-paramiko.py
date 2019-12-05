@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ 适用于部署 jdk maven项目 """
 import json
 import os
@@ -7,10 +8,20 @@ import sys
 import paramiko
 
 java_exe = u"\"D:\\Program Files (Dev)\\Java\\jdk1.8.0_201\\bin\\java.exe\""
-mvn_exe = r'''"D:\Program Files (Dev)\Maven\apache-maven-3.5.4\bin\mvn.cmd"'''
 current = os.path.dirname(os.path.abspath(__file__))
 
-# mvn_exe = u"\"D:\\Program Files (Dev)\\Maven\\apache-maven-3.6.0\\bin\\mvn.cmd\""
+mvn_exe = u"\"D:\\Program Files (Dev)\\Maven\\apache-maven-3.6.0\\bin\\mvn.cmd\""
+
+
+# mvn_exe = r'''"D:\Program Files (Dev)\Maven\apache-maven-3.5.4\bin\mvn.cmd"''' 不好使
+
+
+def local_package(project):
+    p = json.load(open(os.path.join(current, 'project.json'), encoding='utf-8'))
+    proj = p.get(project)
+    os.chdir(proj.get('package_command_path'))
+    # os.system(u"\"D:\\Program Files (Dev)\\Maven\\apache-maven-3.6.0\\bin\\mvn.cmd\" package -Dmaven.test.skip=true")
+    os.system(mvn_exe + " package package -Dmaven.test.skip=true")
 
 
 def connect(dest) -> paramiko.SSHClient:
@@ -20,13 +31,6 @@ def connect(dest) -> paramiko.SSHClient:
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     ssh.connect(hostname=m.get('host'), port=m.get('port'), username=m.get('username'), password=m.get('password'))
     return ssh
-
-
-def local_package(project):
-    p = json.load(open(os.path.join(current, 'project.json')))
-    proj = p.get(project)
-    os.chdir(proj.get('package_command_path'))
-    # os.system(mvn_exe + " package -Dmaven.test.skip=true")
 
 
 def upload_file(ssh: paramiko.SSHClient, project: str) -> paramiko.SFTPClient:
@@ -41,10 +45,8 @@ def upload_file(ssh: paramiko.SSHClient, project: str) -> paramiko.SFTPClient:
 
 def deploy(dest, project):
     paramiko.util.log_to_file('./log.log')
-    local_package(project)  # 本地打包项目
     ssh = connect(dest)  # 连接远程
-    # upload_file(ssh, project)
-
+    upload_file(ssh, project)
     # 建立交互式shell连接
     chan = ssh.invoke_shell()
     chan.settimeout(10)
@@ -81,4 +83,5 @@ def read_out(chan) -> str:
 
 
 if __name__ == '__main__':
+    local_package('demo')  # 本地打包项目
     deploy('aliyun', 'demo')
