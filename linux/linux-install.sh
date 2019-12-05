@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# 全局变量
+input="N"
+# 通用校验输入的方法
+function checkInput() {
+    while true; do
+        read -t 60 -p "$1" input
+        case $input in
+            [YyNn]* ) break;;
+            * ) echo "Please enter Y/y/N/n .";;
+        esac
+    done
+}
+
 # Linux下安装Git服务器
 # 1. 首先登陆root用户
 if [ `whoami` == "root" ] ; then
@@ -19,7 +32,7 @@ OS=`uname -a`
 
 if [[ "$OS" =~ "Ubuntu" ]]; then
 	echo "system is Ubuntu"
-	apt-get update
+#	apt-get update
 	ins_pre=${ins_li[0]}
 elif [[ "$OS" =~ "Darwin" ]]; then
 	echo "system is macOS "
@@ -39,3 +52,8 @@ else
     echo "Git installed"
 fi
 
+# 是否安装 open-jdk 8
+checkInput "Do you want to install open jdk 8: ";
+#if [ "$input" == "Y" -o "$input" = "y" ] ; then
+  "$ins_pre" install openjdk-8-jre-headless
+#fi
