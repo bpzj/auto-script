@@ -40,8 +40,11 @@ def upload_file(ssh: paramiko.SSHClient, config: dict) -> paramiko.SFTPClient:
 def deploy(conf: str):
     paramiko.util.log_to_file('./log.log')
     config = json.load(open(os.path.join(current, 'deploy_conf.json'), encoding='utf-8')).get(conf)
+    print("开始连接远程服务器: ", config.get('host'))
     ssh = connect(config)  # 连接远程
-    upload_file(ssh, config)
+    print("连接远程服务器成功, 准备上传文件")
+    # upload_file(ssh, config)
+    print("上传文件结束, 执行启动命令")
     # 建立交互式shell连接
     chan = ssh.invoke_shell()
     chan.settimeout(10)
@@ -54,11 +57,11 @@ def deploy(conf: str):
 def exec_command(chan: paramiko.Channel, commands: list):
     for cmd in commands:
         chan.send(cmd + '\n')
-        read_out(chan)
+        read_out(chan, wait_time=2)
 
 
 def select_group_or_not(chan: paramiko.Channel, config: dict):
-    out_info = read_out(chan)
+    out_info = read_out(chan, wait_time=3)
     if "elect group" not in out_info:
         return
     idx = '0'
@@ -72,26 +75,21 @@ def select_group_or_not(chan: paramiko.Channel, config: dict):
         print("ip 未找到")
         return False
     chan.send(idx + '\n')
-    read_out(chan)
+    read_out(chan, wait_time=3)
     return True
 
 
-def read_out(chan: paramiko.Channel) -> str:
+def read_out(chan: paramiko.Channel, wait_time=1) -> str:
+    now = time.time()
     out = ''
-    time.sleep(0.1)
     while True:
         while chan.recv_ready():
             data = chan.recv(256).decode('utf-8')
             out = out + data
             sys.stdout.write(data)
-        while not chan.recv_ready() and exe_result_right(out):
+        #     and time.time() - now > 3
+        while not chan.recv_ready() and time.time() - now > wait_time:
             return out
-
-
-def exe_result_right(out_str: str):
-    last = out_str.split("\r\n")[-1]
-    s = 'Started Application'
-    return ('@' in last) or (s in last) or (s in out_str.split("\r\n")[-2])
 
 
 # 老的函数
@@ -109,3 +107,4 @@ def exe_result_right(out_str: str):
 if __name__ == '__main__':
     # local_package('demo')  # 本地打包项目
     deploy('virtual-box')
+    # deploy('blj-test')
