@@ -8,6 +8,11 @@
     "local_file_path": "C:\\Users\\bpzj\\Desktop\\all-code\\java-work-experience\\web\\target\\web-0.0.1.jar",
     "remote_file_path": "/root/web-0.0.1.jar",
     "deploy_cmd_path": "/root",
-    "deploy_cmd": "java -jar web-0.0.1.jar"
+    "deploy_cmd": [
+      "cd /root",
+      "kill -9 `ps -ef|grep web-0.0.1.jar|grep -v grep|awk '{print $2}'`",
+      "nohup java -jar web-0.0.1.jar > output.log 2>&1 &",
+      "tail -f output.log"
+    ]
   }
 }

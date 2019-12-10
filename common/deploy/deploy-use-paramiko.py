@@ -37,12 +37,6 @@ def upload_file(ssh: paramiko.SSHClient, config: dict) -> paramiko.SFTPClient:
     return f
 
 
-def exe_deploy_command(chan: paramiko.Channel, config: dict):
-    if config.get('deploy_cmd_path'):
-        send_and_result(chan, 'cd ' + config.get('deploy_cmd_path'))
-    send_and_result(chan, config.get('deploy_cmd'))
-
-
 def deploy(conf: str):
     paramiko.util.log_to_file('./log.log')
     config = json.load(open(os.path.join(current, 'deploy_conf.json'), encoding='utf-8')).get(conf)
@@ -51,15 +45,22 @@ def deploy(conf: str):
     # 建立交互式shell连接
     chan = ssh.invoke_shell()
     chan.settimeout(10)
+    select_group_or_not(chan, config)
+    exec_command(chan, config.get("deploy_cmd"))
+    ssh.close()
+    chan.close()
+
+
+def exec_command(chan: paramiko.Channel, commands: list):
+    for cmd in commands:
+        chan.send(cmd + '\n')
+        read_out(chan)
+
+
+def select_group_or_not(chan: paramiko.Channel, config: dict):
     out_info = read_out(chan)
-    if "select group" in out_info:
-        if not select_group(chan, config, out_info):
-            exit()
-
-    exe_deploy_command(chan, config)
-
-
-def select_group(chan: paramiko.Channel, config: dict, out_info: str):
+    if "elect group" not in out_info:
+        return
     idx = '0'
     group_list = out_info.split("\r\n")
     for ip_addr in group_list:
@@ -75,21 +76,34 @@ def select_group(chan: paramiko.Channel, config: dict, out_info: str):
     return True
 
 
-def send_and_result(chan, msg: str):
-    chan.send(msg + '\n')
-    read_out(chan)
-
-
-def read_out(chan) -> str:
+def read_out(chan: paramiko.Channel) -> str:
     out = ''
-    while not chan.recv_ready():
-        time.sleep(1)
-    while chan.recv_ready():
-        data = chan.recv(102400).decode('utf-8')
-        out = out + data
-        sys.stdout.write(data)
-        time.sleep(1)
-    return out
+    time.sleep(0.1)
+    while True:
+        while chan.recv_ready():
+            data = chan.recv(256).decode('utf-8')
+            out = out + data
+            sys.stdout.write(data)
+        while not chan.recv_ready() and exe_result_right(out):
+            return out
+
+
+def exe_result_right(out_str: str):
+    last = out_str.split("\r\n")[-1]
+    s = 'Started Application'
+    return ('@' in last) or (s in last) or (s in out_str.split("\r\n")[-2])
+
+
+# 老的函数
+# def read_out(chan: paramiko.Channel) -> str:
+# while not chan.recv_ready():
+#     time.sleep(1)
+# while chan.recv_ready():
+#     data = chan.recv(102400).decode('utf-8')
+#     out = out + data
+#     sys.stdout.write(data)
+#     time.sleep(1)
+# return out
 
 
 if __name__ == '__main__':
