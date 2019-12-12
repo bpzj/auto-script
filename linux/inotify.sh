@@ -10,5 +10,5 @@ src=/root
 
 inotifywait -mrq --timefmt '%d/%m/%y %H:%M' --format '%T %w%f%e' -e modify,create $src |  while read file
 do
-      echo "  ${file} was rsynced" >> /root/rsync.log 2>&1
+      echo "  ${file} was rsynced" >> /root/demo.log 2>&1
 done
