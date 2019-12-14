@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
-modify=`stat /root/sync/ |grep Modify`
-while [[ "$modify" == "" ]]; do
+last=""
+while [[ "" == "" ]]; do
+  modify=`stat /root/sync/ |grep Modify`
+  if [[ "$modify" == "$last" ]]; then
+    echo "same"
+  else
+    echo "not same"
+    last=$modify
+  fi
 
+  sleep 5
 done
