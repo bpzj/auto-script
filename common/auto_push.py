@@ -17,3 +17,4 @@ def push_grammar_project():
 if __name__ == '__main__':
     # 配置 日期格式 git config --global log.date format:"%Y-%m-%d %H:%M:%S"
     dir_change_run(path=r"C:\Users\bpzj\Desktop\all-code\java-grammar\.git", func=push_grammar_project)
+
