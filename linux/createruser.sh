@@ -1,4 +1,4 @@
-# 1. 首先登陆root用户
+# 1. 棣栧厛鐧婚檰root鐢ㄦ埛
 if [ `whoami` == "root" ] ; then
     echo "root has login"
 else
@@ -6,7 +6,7 @@ else
     su root
 fi
 
-# 2. 根据传入参数, 创建用户
+# 2. 鏍规嵁浼犲叆鍙傛暟, 鍒涘缓鐢ㄦ埛
 USER_NAME='bpzj'
 USER_COUNT=`cat /etc/passwd | grep "^$USER_COUNT:" -c`
 

@@ -22,25 +22,27 @@ else
     su root
 fi
 
-ins_li=("apt" "yum" "brew")
+ins_li=("yum" "apt" "brew")
 ins_pre=""
 
-
+os=""
 # = 与 == 在 [ ] 中表示判断(字符串比较)时是等价的
-# 获取当前系统
-OS=`uname -a`
-
-if [[ "$OS" =~ "Ubuntu" ]]; then
-	echo "system is Ubuntu"
-#	apt-get update
-	ins_pre=${ins_li[0]}
-elif [[ "$OS" =~ "Darwin" ]]; then
-	echo "system is macOS "
-	ins_pre=${ins_li[3]}
+# 获取当前系统发行版
+if [[ `cat /etc/issue` =~ "CentOS"  || `cat /etc/redhat-release` =~ "CentOS" ]]; then
+  os="CentOS"
+  ins_pre=${ins_li[0]}
+elif [[ `uname -a` =~ "Ubuntu" ]]; then
+	os="Ubuntu"
+	ins_pre=${ins_li[1]}
+elif [[ `uname -a` =~ "Darwin" ]]; then
+	os="macOS"
+	ins_pre=${ins_li[2]}
 else
 	echo "system unsupport, exit."
 	exit 0
 fi
+echo "system is $os."
+
 
 # 3. 安装git
 result=`command -v git | grep -w "git" -c`
@@ -57,7 +59,12 @@ result=`command -v javac | grep -w "javac" -c`
 if [ $result -le 0 ]; then
   checkInput "Do you want to install open jdk 8: ";
   if [ "$input" == "Y" -o "$input" = "y" ] ; then
-    "$ins_pre" install openjdk-8-jdk-headless
+    if [[ $os == "CentOS" ]] ; then
+      yum install java-1.8.0-openjdk
+      yum install java-1.8.0-openjdk-devel
+    elif [[ $os == "Ubuntu" ]]; then
+      "$ins_pre" install openjdk-8-jdk-headless
+    fi
   fi
 else
   echo "JDK installed"

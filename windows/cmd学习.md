@@ -8,8 +8,7 @@ cmd后面的/c /k 参数：
 
 scp C:\Users\bpzj\Desktop\all-code\script\linux\inotify.sh root@192.168.56.104:/root && ssh root@192.168.56.104 "bash /root/inotify.sh"
 
-scp C:\Users\bpzj\Desktop\all-code\script\linux\linux-install.sh root@192.168.56.104:/root && ssh root@192.168.56.104 "bash /root/l
-inux-install.sh"
+scp C:\Users\bpzj\Desktop\all-code\script\linux\linux-install.sh root@192.168.56.104:/root && ssh root@192.168.56.104 "bash /root/linux-install.sh"
 
 ## 在 IDEA (Windows系统)中调试脚本:
 思路: 上传shell脚本文件到一个真实的linux环境, 本地ssh执行远程脚本
