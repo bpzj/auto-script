@@ -31,7 +31,7 @@ def files_of_dir(f: paramiko.SFTPClient, remote_dir) -> list:
     return all_file
 
 
-def download_file(sftp: paramiko.SFTPClient, sync_remote=r'/root/sync', local_path=r'C:\Users\bpzj\Desktop\all-code\work'):
+def download_file(sftp: paramiko.SFTPClient, sync_remote=r'/root/sync', local_path='D:\\sync\\'):
     remote_all = files_of_dir(sftp, sync_remote)
     for file in remote_all:
         name = str(file).replace(sync_remote, '')
@@ -44,17 +44,27 @@ def download_file(sftp: paramiko.SFTPClient, sync_remote=r'/root/sync', local_pa
         sftp.get(file, local)
 
 
+def upload_file(sftp, sync_remote, local_path):
+    pass
+
+
 def sync_dir(config):
     sftp = connect(config)
     sync_remote = r'/root/sync'
     sync_remote = r'/10.130.218.69 sftp (10.130.218.69)/nginx/home/nginx/sync'
-    download_file(sftp, sync_remote, )
-    old = sftp.stat(sync_remote)
+    remote_old = sftp.stat(sync_remote)
+    local_path = r'C:\Users\bpzj\Desktop\all-code\work'
+    local_old = os.stat(local_path)
     while True:
         # st_mtime modification - 最近修改时间
-        if not sftp.stat(sync_remote).st_mtime == old.st_mtime:
-            download_file(sftp, sync_remote)
-            old = sftp.stat(sync_remote)
+        if not sftp.stat(sync_remote).st_mtime == remote_old.st_mtime:
+            download_file(sftp, sync_remote, local_path)
+            remote_old = sftp.stat(sync_remote)
+            local_old = os.stat(local_path)
+        elif os.stat(local_path).st_mtime == local_old.st_mtime:
+            upload_file(sftp, sync_remote, local_path)
+            local_old = os.stat(local_path)
+            remote_old = sftp.stat(sync_remote)
         else:
             print("no change")
             time.sleep(5)
