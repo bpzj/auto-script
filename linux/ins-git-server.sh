@@ -34,7 +34,7 @@ fi
 # 4. 修改 /etc/ssh/sshd_config 配置文件
 file="/etc/ssh/sshd_config"
 line1=`grep -n "^.*AuthorizedKeysFile.*authorized_keys.*" $file | cut -d ":" -f 1`
-echo $line1
+#echo $line1
     # 如果不匹配，就在文件最后加一行，如果匹配，直接替换
     # -z 判断长度是否为零，为零 则为真
 if [ -z "$line1" ]; then
@@ -46,7 +46,7 @@ line1=`grep -n "^.*AuthorizedKeysFile.*authorized_keys.*" $file | cut -d ":" -f 
 
     # 如果不匹配，就在上面的那行前边插入
 line2=`grep -n "^.*PubkeyAuthentication.*yes.*" $file | cut -d ":" -f 1`
-echo $line2
+#echo $line2
 if [ -z "$line2" ]; then
     sed -i ''$line1'i\PubkeyAuthentication yes' $file
 else
@@ -56,7 +56,6 @@ line2=`grep -n "^.*PubkeyAuthentication.*yes.*" $file | cut -d ":" -f 1`
 
     # 如果不匹配，就在上面的那行前边插入
 line3=`grep -n "^.*RSAAuthentication.*yes.*" $file | cut -d ":" -f 1`
-echo $line3
 if [ -z "$line3" ]; then
     sed -i ''$line2'i\RSAAuthentication yes' $file
 else
@@ -64,6 +63,7 @@ else
 fi
     # 重启sshd服务
 sudo service sshd restart
+echo 'ssh rsa login on'
 
 
 # 5. 创建 /home/git/repository 目录, /home/git/.ssh目录，authorized_keys文件
@@ -77,7 +77,7 @@ curl https://raw.githubusercontent.com/bpzj/script/master/ssh/id_rsa.pub > /home
 chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
 
-sudo systemctl resatrt sshd
+sudo systemctl restart sshd
 
 # 6. 取消git用户ssh登陆，而只能使用git，有问题，暂时不弄了
 # sed -E "s/^git(.*)git:\/bin.*/git\1git:\/bin\/git-shell/" /etc/passwd
