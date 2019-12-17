@@ -9,18 +9,6 @@ else
     su root
 fi
 
-# 2. 新建 git 用户
-    # 判断 git 用户是否存在
-result=`cut -d: -f1 /etc/passwd | grep -w "git" -c`
-if [ $result -le 0 ]; then
-    echo "User git does not exist, create user git"
-    useradd git
-    echo git:dqgq1234 | chpasswd
-else
-    echo "I think git server has installed"
-    exit
-fi
-
 # 3. 安装git
 result=`command -v git | grep -w "git" -c`
 # result 等于0 表示没有找到git 命令，需要安装git，不同系统安装命令不一样
@@ -32,6 +20,16 @@ else
     echo "Git installed"
 fi
 
+# 2. 新建 git 用户
+    # 判断 git 用户是否存在
+result=`cut -d: -f1 /etc/passwd | grep -w "git" -c`
+if [ $result -le 0 ]; then
+    echo "User git does not exist, create user git"
+    useradd git
+    echo git:dqgq1234 | chpasswd
+else
+    echo "update git server config"
+fi
 
 # 4. 修改 /etc/ssh/sshd_config 配置文件
 file="/etc/ssh/sshd_config"
@@ -75,9 +73,11 @@ mkdir -p /home/git/.ssh
 chown -R git:git /home/git/repository
 chown -R git:git /home/git/.ssh
 # echo 
-curl https://raw.githubusercontent.com/bpzj/linux.conf/master/ssh/id_rsa.pub > /home/git/.ssh/authorized_keys
+curl https://raw.githubusercontent.com/bpzj/script/master/ssh/id_rsa.pub > /home/git/.ssh/authorized_keys
 chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
+
+sudo systemctl resatrt sshd
 
 # 6. 取消git用户ssh登陆，而只能使用git，有问题，暂时不弄了
 # sed -E "s/^git(.*)git:\/bin.*/git\1git:\/bin\/git-shell/" /etc/passwd
