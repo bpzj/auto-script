@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-file="/root/webapps/ypgl-1.0.0.jar"
-last=`stat $file |grep Modify`
+jarFile="/nginx/home/nginx/webapps/ypgl-1.0.0.jar"
+last=`stat $jarFile |grep Modify`
 while [[ "" == "" ]]; do
-  modify=`stat $file |grep Modify`
+  modify=`stat $jarFile |grep Modify`
   if [[ "$modify" == "$last" ]]; then
     echo "same"
   else
@@ -12,7 +12,7 @@ while [[ "" == "" ]]; do
     if [ -n "$process" ] ; then
       kill -9 $process
     fi
-    cd /root/webapps && nohup java -jar ypgl-1.0.0.jar --spring.profiles.active=test > ypgl.log &
+    cd /nginx/home/nginx/webapps && nohup java -jar ypgl-1.0.0.jar --spring.profiles.active=int > ypgl.log &
     last=$modify
   fi
 
