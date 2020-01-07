@@ -73,7 +73,9 @@ mkdir -p /home/git/.ssh
 chown -R git:git /home/git/repository
 chown -R git:git /home/git/.ssh
 # echo 
-curl https://raw.githubusercontent.com/bpzj/script/master/ssh/id_rsa.pub > /home/git/.ssh/authorized_keys
+# curl https://raw.githubusercontent.com/bpzj/script/master/ssh/id_rsa.pub > /home/git/.ssh/authorized_keys
+
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwWEH7TjAN23s4l8RrI02KSfSyAqkzj/q2FXQ/bTFHdegmo19PEVGGSw85EB3IWjc/Ev0LVIYRLp1mUxQQzqZMlXrugw4a+3ZdbRh69Rd0HvtHpyUHioxCULcLZTpIArxCdVV505KySYqDGvtVWXRKYXwyD8CjjX2MmfYuNGqQ7o1AijAHS+M7xkZNU0u8kKbwiSNelCJX2lczVB46HxXfK2PjNeKXToV/LwsQAqxLTkxUWyInf7Rp0SI1eYxYsSbUUfENOI89dHbZhV3oh0GgTNz9TErQAO7DX6hSXzARw+hY6uJ6a8Dq/t5zQpd+buVlT/5/Dz8sAgVVM2BBPQUx root@bpzj" > /home/git/.ssh/authorized_keys
 chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
 
