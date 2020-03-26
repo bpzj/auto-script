@@ -4,6 +4,8 @@ import time
 
 import win32file
 import win32con
+import subprocess
+
 
 
 def posix_run(path, func):
@@ -74,18 +76,15 @@ if __name__ == '__main__':
     path = r"C:\Users\bpzj\Desktop\all-code\script\.git"
 
     os.chdir(r'C:\Users\bpzj\Desktop\all-code\script')
-    with os.popen(r'git log -1', 'r') as f:
-        text = f.read()
-    last_commit = str(text).split("\n")[0]
-    print(last_commit)
 
+    res = subprocess.Popen('git log -1',shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True)
+    last_commit = res.stdout.readlines()[0]
 
     def demo(last_commit):
         print("如果文件发生变化, 执行这里")
         os.chdir(r'C:\Users\bpzj\Desktop\all-code\script')
-        with os.popen(r'git log -1', 'r') as f:
-            text = f.read()
-        commit = str(text).split("\n")[0]
+        res = subprocess.Popen('git log -1',shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True)
+        commit = res.stdout.readlines()[0]
         if last_commit != commit:
             print("有新提交")
             last_commit = commit
