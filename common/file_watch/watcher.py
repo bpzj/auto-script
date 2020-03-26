@@ -85,8 +85,8 @@ if __name__ == '__main__':
         res = subprocess.Popen('git log -1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
         commit = res.stdout.readlines()[0]
         if last_commit != commit:
-            print("last_commit" + last_commit)
-            print("commit" + commit)
+            print("last_commit" + str(last_commit))
+            print("commit" + str(commit))
             print("有新提交")
             last_commit = commit
 
