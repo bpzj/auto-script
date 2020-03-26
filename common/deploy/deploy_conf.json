@@ -19,7 +19,7 @@
     "host": "10.135.52.138",
     "port": 22,
     "username": "itw_shenzl",
-    "password": "Pass654321",
+    "password": "Pass7654321",
     "select_ip": "10.130.218.69",
     "local_file_path": "C:\\Users\\bpzj\\Desktop\\all-code\\java-work-experience\\web\\target\\web-0.0.1.jar",
     "remote_file_path": "/10.130.218.69 sftp (10.130.218.69)/nginx/home/nginx/webapps/web-0.0.1.jar",

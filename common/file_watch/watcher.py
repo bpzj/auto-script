@@ -63,7 +63,7 @@ def win_run(path, func):
             None)
         this_time = time.time()
         if this_time - last_time > 20:
-            func()
+            func(last_commit)
         # for action, filename in results:
         #     full_filename = os.path.join(path, filename)
         #     print(full_filename, actions.get(action, "Unknown"))
@@ -74,8 +74,25 @@ def dir_change_run(path: str, func):
 
 
 if __name__ == '__main__':
-    def demo():
-        print("func exe")
+    path = r"C:\Users\bpzj\Desktop\all-code\script"
+
+    os.chdir(r'C:\Users\bpzj\Desktop\all-code\java\java-grammar')
+    with os.popen(r'git log -1', 'r') as f:
+        text = f.read()
+    last_commit = str(text).split("\n")[0]
+    print()
 
 
-    dir_change_run(r"C:\Users\bpzj\Desktop\all-code\java-grammar\.git", demo)
+    def demo(last_commit):
+        os.chdir(r'C:\Users\bpzj\Desktop\all-code\java\java-grammar')
+        with os.popen(r'git log -1', 'r') as f:
+            text = f.read()
+        commit = str(text).split("\n")[0]
+        if last_commit != commit:
+            print("有新提交")
+            last_commit = commit
+        print("如果文件发生变化, 执行这里")
+
+
+    dir_change_run(path, demo(last_commit))
+
