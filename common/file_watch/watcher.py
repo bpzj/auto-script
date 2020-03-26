@@ -48,7 +48,6 @@ def win_run(path, func, last_change):
     )
 
     while True:
-        last_time = time.time()
         results = win32file.ReadDirectoryChangesW(
             h_dir,
             1024,
@@ -61,9 +60,7 @@ def win_run(path, func, last_change):
             win32con.FILE_NOTIFY_CHANGE_SECURITY,
             None,
             None)
-        this_time = time.time()
-        if this_time - last_time > 20:
-            func(last_change)
+        func(last_change)
         # for action, filename in results:
         #     full_filename = os.path.join(path, filename)
         #     print(full_filename, actions.get(action, "Unknown"))
