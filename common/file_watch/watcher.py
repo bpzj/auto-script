@@ -25,7 +25,7 @@ def posix_run(path, func):
         print("error in notify", sys.exc_info()[0])
 
 
-def win_run(path, func):
+def win_run(path, func, last_change):
     actions = {
         1: "Created",
         2: "Deleted",
@@ -63,14 +63,14 @@ def win_run(path, func):
             None)
         this_time = time.time()
         if this_time - last_time > 20:
-            func(last_commit)
+            func(last_change)
         # for action, filename in results:
         #     full_filename = os.path.join(path, filename)
         #     print(full_filename, actions.get(action, "Unknown"))
 
 
-def dir_change_run(path: str, func):
-    win_run(path, func) if os.name == 'nt' else posix_run(path, func)
+def dir_change_run(path: str, func, last_change):
+    win_run(path, func, last_change) if os.name == 'nt' else posix_run(path, func)
 
 
 if __name__ == '__main__':
@@ -94,5 +94,5 @@ if __name__ == '__main__':
         print("如果文件发生变化, 执行这里")
 
 
-    dir_change_run(path, demo(last_commit))
+    dir_change_run(path, demo, last_commit)
 
