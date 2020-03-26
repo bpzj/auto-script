@@ -74,16 +74,17 @@ def dir_change_run(path: str, func, last_change):
 
 
 if __name__ == '__main__':
-    path = r"C:\Users\bpzj\Desktop\all-code\script"
+    path = r"C:\Users\bpzj\Desktop\all-code\script\.git"
 
     os.chdir(r'C:\Users\bpzj\Desktop\all-code\java\java-grammar')
     with os.popen(r'git log -1', 'r') as f:
         text = f.read()
     last_commit = str(text).split("\n")[0]
-    print()
+    print(last_commit)
 
 
     def demo(last_commit):
+        print("如果文件发生变化, 执行这里")
         os.chdir(r'C:\Users\bpzj\Desktop\all-code\java\java-grammar')
         with os.popen(r'git log -1', 'r') as f:
             text = f.read()
@@ -91,7 +92,6 @@ if __name__ == '__main__':
         if last_commit != commit:
             print("有新提交")
             last_commit = commit
-        print("如果文件发生变化, 执行这里")
 
 
     dir_change_run(path, demo, last_commit)
