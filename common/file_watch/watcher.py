@@ -61,7 +61,7 @@ def win_run(path, func, last_change):
             win32con.FILE_NOTIFY_CHANGE_SECURITY,
             None,
             None)
-        func(last_change)
+        last_change = func(last_change)
         # for action, filename in results:
         #     full_filename = os.path.join(path, filename)
         #     print(full_filename, actions.get(action, "Unknown"))
@@ -80,15 +80,15 @@ if __name__ == '__main__':
     last_commit = res.stdout.readlines()[0]
 
 
-    def demo(last_commit):
+    def demo(last):
         os.chdir(r'C:\Users\bpzj\Desktop\all-code\script')
         res = subprocess.Popen('git log -1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
         commit = res.stdout.readlines()[0]
-        if last_commit != commit:
-            print("last_commit" + str(last_commit))
+        if last != commit:
+            print("last_commit" + str(last))
             print("commit" + str(commit))
             print("有新提交")
-            last_commit = commit
+        return commit
 
 
     dir_change_run(path, demo, last_commit)
