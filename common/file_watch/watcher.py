@@ -76,7 +76,7 @@ def dir_change_run(path: str, func, last_change):
 if __name__ == '__main__':
     path = r"C:\Users\bpzj\Desktop\all-code\script\.git"
 
-    os.chdir(r'C:\Users\bpzj\Desktop\all-code\java\java-grammar')
+    os.chdir(r'C:\Users\bpzj\Desktop\all-code\script')
     with os.popen(r'git log -1', 'r') as f:
         text = f.read()
     last_commit = str(text).split("\n")[0]
@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     def demo(last_commit):
         print("如果文件发生变化, 执行这里")
-        os.chdir(r'C:\Users\bpzj\Desktop\all-code\java\java-grammar')
+        os.chdir(r'C:\Users\bpzj\Desktop\all-code\script')
         with os.popen(r'git log -1', 'r') as f:
             text = f.read()
         commit = str(text).split("\n")[0]
