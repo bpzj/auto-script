@@ -91,5 +91,4 @@ if __name__ == '__main__':
         return commit
 
 
-
     dir_change_run(path, demo, last_commit)
