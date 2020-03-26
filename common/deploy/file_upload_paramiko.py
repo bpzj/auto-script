@@ -2,13 +2,17 @@
 """ 适用于部署 jdk maven项目 """
 import json
 import os
-import re
 import time
 import sys
 import paramiko
 from stat import S_ISDIR
+import win32file
+import win32con
+import subprocess
 
 current = os.path.dirname(os.path.abspath(__file__))
+project = "virtual-box"
+config = json.load(open(os.path.join(current, 'deploy_conf.json'), encoding='utf-8')).get(project)
 
 
 def maven_package(project_path, mvn_cmd=None):
@@ -32,11 +36,11 @@ def connect(conf: dict) -> paramiko.SSHClient:
     return ssh
 
 
-def upload_file(sftp: paramiko.SFTPClient, remote_path=r'/root/', local_path='D:\\sync\\') -> paramiko.SFTPClient:
+def upload_file(sftp: paramiko.SFTPClient, local_path, remote_path) -> paramiko.SFTPClient:
     local_all = files_of_dir(local_path)
     for file in local_all:
-        real_remote = str(file).replace(local_path, remote_path).replace('\\', '/')
-        remote_p = os.path.dirname(file).replace(local_path, remote_path).replace('\\', '/')
+        real_remote = os.path.join(remote_path, file.replace(os.path.dirname(local_path), '').lstrip('\\')).replace("\\", "/")
+        remote_p = os.path.dirname(real_remote)
         # 远程创建文件夹
         try:
             stat = sftp.stat(remote_p)
@@ -53,8 +57,10 @@ def upload_file(sftp: paramiko.SFTPClient, remote_path=r'/root/', local_path='D:
 
 def files_of_dir(local_path) -> list:
     """获取本地路径下的所有文件"""
+    all_file = []
     if os.path.isfile(local_path):
-        return [].append(local_path)
+        all_file.append(local_path)
+        return all_file
     all_file = []
     for i, j, k in os.walk(local_path):
         for n in k:
@@ -131,11 +137,61 @@ def read_out(chan: paramiko.Channel, wait_time=1) -> str:
 # return out
 
 
+def watch_file(path, func, last_change):
+    actions = {
+        1: "Created",
+        2: "Deleted",
+        3: "Updated",
+        4: "Renamed from something",
+        5: "Renamed to something"
+    }
+    file_list_directory = 0x0001
+
+    # path_to_watch = r'C:\Users\bpzj\Desktop\all-code\java-grammar\.git'
+    print('监视此路径的变化: ', path)
+    h_dir = win32file.CreateFile(
+        path,
+        file_list_directory,
+        win32con.FILE_SHARE_READ | win32con.FILE_SHARE_WRITE | win32con.FILE_SHARE_DELETE,
+        None,
+        win32con.OPEN_EXISTING,
+        win32con.FILE_FLAG_BACKUP_SEMANTICS,
+        None
+    )
+
+    while True:
+        results = win32file.ReadDirectoryChangesW(
+            h_dir,
+            1024,
+            True,
+            win32con.FILE_NOTIFY_CHANGE_FILE_NAME |
+            win32con.FILE_NOTIFY_CHANGE_DIR_NAME |
+            win32con.FILE_NOTIFY_CHANGE_ATTRIBUTES |
+            win32con.FILE_NOTIFY_CHANGE_SIZE |
+            win32con.FILE_NOTIFY_CHANGE_LAST_WRITE |
+            win32con.FILE_NOTIFY_CHANGE_SECURITY,
+            None,
+            None)
+        last_change = func(last_change)
+
+
+def upload_callback(last):
+    os.chdir(config.get('git_cmd_path'))
+    res = subprocess.Popen('git log -1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
+    commit = res.stdout.readlines()[0]
+    if last != commit:
+        print("有新提交")
+        maven_package(config.get('package_cmd_path'))
+        print("开始连接远程服务器: ", config.get('host'))
+        ssh = connect(config)
+        print('连接成功,开始上传文件')
+        upload_file(ssh.open_sftp(), config.get('upload_local_path'), config.get('upload_remote_path'))
+        ssh.close()
+    return commit
+
+
 if __name__ == '__main__':
-    ssh = connect({"host": "192.168.56.104", "port": 22, "username": "root", "password": "4260"})
-    project_path = "C:\\Users\\bpzj\\Desktop\\all-code\\java"
-    upload_file(ssh.open_sftp())
-    ssh.close()
+    watch_file(config.get('.git_path'), upload_callback, "start")
 
     # maven_package(project_path)  # 本地打包项目
     # deploy('blj-test')
