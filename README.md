@@ -10,7 +10,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bpzj/auto-install/master
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/bpzj/auto-install/master/android-install.sh)" 
 ```
 
-## common
+## 通用 Python 脚本
 [监视git目录, 有新提交上传指定文件到远程服务器](./common/file_upload_paramiko.py)
 
 [执行java maven打包命令](./common/java_maven_pkg.py)
