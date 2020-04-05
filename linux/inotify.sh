@@ -8,7 +8,7 @@ src=/root
 #      echo "  ${file} was rsynced" >>/tmp/rsync.log 2>&1
 #done
 
-inotifywait -mrq --timefmt '%d/%m/%y %H:%M' --format '%T %w%f%e' -e modify,create $src |  while read file
+inotifywait -mrq --timefmt '%d/%m/%y %H:%M' --format '%T %w%f%e' -e modify,create $src | while read file
 do
       echo "  ${file} was rsynced" >> /root/demo.log 2>&1
 done
