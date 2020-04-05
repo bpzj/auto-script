@@ -10,7 +10,13 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bpzj/auto-install/master
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/bpzj/auto-install/master/android-install.sh)" 
 ```
 
-## common-deploy 部署项目脚本
+## common
+[监视git目录, 有新提交上传指定文件到远程服务器](./common/file_upload_paramiko.py)
+
+[执行java maven打包命令](./common/java_maven_pkg.py)
+
+[python获得windows系统中命令行的输出](./common/get_cmd_out.py)
+
 
 ## Linux
 [Linux安装后初始化, 安装git, jdk, 等等](./linux/linux-install.sh)
