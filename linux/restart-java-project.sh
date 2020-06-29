@@ -45,10 +45,12 @@ out=${jarFile/.jar/.out}
 if [ -n "$process" ] ; then
     # todo 存在原来的进程 取原来的参数
     active=`ps -ef|grep "$jarFile"|grep -v grep|awk -F'active=' '{print $2}'|awk 'NR==1{print $1}'`
+    args=`ps -ef|grep "$jarFile"|grep -v grep|sed -r 's/.*java {1,}-jar {1,}.*?.jar {1,}//'`
 else
     # 如果不存在原来的进程，说明是新启动，可能需要加额外参数
     read -t 60 -p "请输入要启动的profile: " active
     read -t 120 -p "请输入额外参数: " args
+    args="--spring.profiles.active=$active $args"
 fi
 
 
@@ -58,11 +60,7 @@ echo "即将执行:"
 if [ -n "$process" ] ; then
     echo "    kill -9 $process"
 fi
-if [ -z "$active" ] ; then
-    echo "    nohup java -jar $jarFile $args > $out &"
-else
-    echo "    nohup java -jar $jarFile --spring.profiles.active=$active $args > $out &"
-fi
+echo "    nohup java -jar $jarFile $args > $out &"
 
 
 
@@ -92,11 +90,7 @@ if [ -n "$process" ] ; then
     kill -9 $process
 fi
 ################  执行命令  ################
-if [ -z "$active" ] ; then
-    nohup java -jar $jarFile $args > $out &
-else
-    nohup java -jar $jarFile --spring.profiles.active=$active $args > $out &
-fi
+nohup java -jar $jarFile $args > $out &
 
 tail -f $out
 
