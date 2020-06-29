@@ -1,130 +1,149 @@
-
-""" 适用于 centos7 amd64  """
-from fabric.api import env, run, local, warn_only
+""" 使用已废弃的fabric3，适用于 centos7 amd64  """
+from fabric.api import env, run
 from fabric.operations import sudo
 from fabric.colors import *
-import shutil
 
-GIT_REPO = "https://github.com/bpzj/linux.conf"
-repo = "git@120.79.47.191:/home/git/repo.git"
-repo_folder = '/home/git/repo.git'
-data_folder = '/home/bpzj/data/repo/'
-local_repo = r'E:\repo'
-local_proj_folder = r'E:\OneDrive\GitHubCode\Study\Java'
+repo_folder = '/home/bpzj/linux.conf'
 env.user = 'root'
 # 使用 本机私钥登录
 env.key_filename = '~/.ssh/id_rsa'
+
 env.hosts = ['120.79.47.191']
 env.port = '22'
-# 跳过错误
-env.warn_only = True
-
-# env.hosts = ['www.lqtblog.com']
-# env.port = '29183'
-# env.password = '4260'     # 使用密码
 
 
-def deptomcat():
-    # 调用函数决定部署哪个项目
-    project = decide_which_proj()
-    # 复制项目文件到 git仓库文件夹
-    copyfile(local_proj_folder, local_repo, project)
-    local("""cd %s && git add . && git commit -m "new" && git push""" % local_repo)
-    run("""cd {} && git pull """.format(data_folder))
-    # 手动拼接出 服务器上项目的路径
-    remote_repo = data_folder + project
-    sudo('cd %s && mvn clean package' % remote_repo)
-    # 自己手动拼接字符串，拼出war包的路径
-    war_path = remote_repo + r"/target/" + project + ".war"
-    # 注意空格
-    sudo('cp -rf ' + war_path + ' /usr/local/tomcat/webapps/')
-    sudo('systemctl restart tomcat')
-    # 部署静态文件
-    static_src='/home/bpzj/data/repo/'+project+'/src/main/webapp/statics'
-    static_dst='/usr/share/nginx/statics/'+project+'/statics'
-    sudo('mkdir -p '+ static_dst)
-    sudo('cp -rf ' + static_src + ' ' + static_dst)
-    #
-    sudo('nginx -s reload')
+def insgit():
+    # 安装ftp
+    sudo('yum install git')
 
 
-def depresin():
-    # 调用函数决定部署哪个项目
-    project = decide_which_proj()
-    # 复制项目文件到 git仓库文件夹
-    copyfile(local_proj_folder, local_repo, project)
-    local("""cd %s && git add . && git commit -m "new" && git push""" % local_repo)
-    run("""cd {} && git pull """.format(data_folder))
-    # 手动拼接出 服务器上项目的路径
-    remote_repo = data_folder + project
-    sudo('cd %s && mvn clean package -Dmaven.test.skip=true' % remote_repo)
-    # 自己手动拼接字符串，拼出war包的路径
-    war_path = remote_repo + r"/target/" + project + ".war"
-    # 注意空格
-    sudo('cp -rf ' + war_path + ' /usr/local/resin/webapps/')
-    # 部署静态文件
-    static_src='/home/bpzj/data/repo/'+project+'/src/main/webapp/statics'
-    static_dst='/usr/share/nginx/statics/'+project+'/statics'
-    sudo('mkdir -p '+ static_dst)
-    sudo('cp -rf ' + static_src + ' ' + static_dst)
-    # 源文件夹 /home/bpzj/data/repo/task4/src/main/webapp/statics
-    # 目标文件夹 /usr/share/nginx/statics/task4/statics
-    # 备用
-    # systemctl stop tomcat
-    # rm -rf /usr/local/resin/wabapps/*
-    # cp /usr/local/tomcat/webapps/task4.war /usr/local/resin/webapps/
-    # /usr/local/resin/bin/resin.sh start
+def cloneconf():
+    """复制所有配置文件"""
+    home_folder = '/home/bpzj'
+    run('cd %s && git clone https://github.com/bpzj/linux.conf.git ' % home_folder)
 
 
-
-def copyfile(parent_src_dir, parent_dst_dir, proj):
-    """
-    用来复制一个项目到指定文件夹
-    :param parent_src_dir: 项目文件夹的父文件夹
-    :param parent_dst_dir: 目标文件夹
-    :param proj: 项目名称，也就是项目文件夹的名称
-    :return:
-    """
-    # 用 上级目录 join 项目名称，获得在本地复制时真正的源地址和目标地址
-    src_dir = os.path.join(parent_src_dir, proj)
-    dst_dir = os.path.join(parent_dst_dir, proj)
-
-    # 先删除项目的目标文件夹
-    for root, dirs, files in os.walk(parent_dst_dir):
-        if proj in dirs:
-            shutil.rmtree(dst_dir)
-
-    # 先复制 src 文件夹
-    shutil.copytree(os.path.join(src_dir, "src"), os.path.join(dst_dir, "src"))
-    # 再复制 pom.xml 文件
-    shutil.copy(os.path.join(src_dir, "pom.xml"), os.path.join(dst_dir, "pom.xml"))
+def instools():
+    """ 安装必备工具 """
+    # 安装 netstat 工具
+    sudo('yum install net-tools')
+    # 安装 wget 
+    sudo('yum install wget')
+    # 安装ftp
+    sudo('yum install ftp')
 
 
-def decide_which_proj():
-        # 获得此脚本文件所在目录
-    root = os.getcwd()
+def inspip2():
+    # 安装pip  ( python2.7 的 pip ) 
+    sudo('yum install python-setuptools')
+    sudo('easy_install pip')
 
-    # 遍历当前目录下的文件和文件夹，只有第一层，包括文件和文件夹
-    dirs = os.listdir()
-    copy_dirs = dirs[:]
 
-    # 去掉文件，在 copy_dirs 列表 中只保留 文件夹
-    for path in dirs:
-        if os.path.isfile(os.path.join(root, path)):
-            copy_dirs.remove(path)
-    print(copy_dirs)
+def insss():
+    """ 安装shadowsshocks """
+    sudo('pip install shadowsocks')
+    sudo('cp -rf /home/bpzj/linux.conf/shadowsocks/shadowsocks.json /etc/shadowsocks.json')
+    sudo('ssserver -c /etc/shadowsocks.json -d start')
 
-    # 逐行打印 当前目录下的 文件夹
-    print("当前目录下有以下文件夹：")
-    for directory in copy_dirs:
-        print("\t\t"+directory)
 
-    # ********************************************
-    # 从键盘输入获取想要部署的项目（文件夹），并检验
-    while True:
-        project = input("请输入想要部署的文件夹(项目):\n")
-        if project in copy_dirs:
-            print("\n^_^ 有这个项目，即将部署\n")
-            return project
-        else:
-            print("\n^_^ 好像没有有这个项目\n")
+def insjdk8152():
+    """安装 jdk-8u152 """
+    # 更新配置文件
+    run('cd %s && git pull' % repo_folder)
+    sudo('wget http://mirrors.linuxeye.com/jdk/jdk-8u152-linux-x64.tar.gz')
+    sudo('mkdir /usr/lib/jvm')
+    sudo('tar -zxvf jdk-8u152-linux-x64.tar.gz -C /usr/lib/jvm')
+    run('source /home/bpzj/linux.conf/jdk/8u152.bashrc', pty=False)
+
+
+def insmaven():
+    # 更新配置文件
+    run('cd %s && git pull' % repo_folder)
+    # 下载maven
+    sudo('wget https://mirrors.cnnic.cn/apache/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz')
+    # 新建 maven 安装目录
+    sudo('mkdir /usr/local/maven')
+    # 解压
+    sudo('tar -xvzf apache-maven-3.5.2-bin.tar.gz -C /usr/local/maven')
+    # 复制配置文件
+    sudo('cp -rf /home/bpzj/linux.conf/profile /etc/profile')
+    # 配置环境变量，source 命令没作用
+    run('source /etc/profile', pty=False)
+
+
+def centinsmysql5720():
+    """ 安装 mysql5.7.20 """
+    # 
+    # 更新配置文件
+    run('cd %s && git pull' % repo_folder)
+    # 下载 mysql 源安装包
+    run('curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm')
+    # 安装 mysql 源
+    sudo('yum localinstall mysql57-community-release-el7-11.noarch.rpm')
+    # 检查 yum 源是否安装成功
+    # sudo("""yum repolist enabled | grep "mysql.*-community.*"""")
+
+    # 安装
+    sudo('yum install mysql-community-server')
+    # 复制配置文件
+    sudo('cp -rf /home/bpzj/linux.conf/mysql/my.cnf /etc/my.cnf')
+    # 安装服务
+    sudo('systemctl enable mysqld')
+    # 启动服务
+    sudo('systemctl start mysqld')
+    # 重新启动
+    sudo('systemctl restart mysqld')
+
+
+def insvsftpd():
+    """ 安装 vsftpd """
+    # 更新配置文件
+    run('cd %s && git pull' % repo_folder)
+    # 安装
+    sudo('yum install -y vsftpd')
+    # 复制、更新配置文件
+    sudo('cp -rf /home/bpzj/linux.conf/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf')
+    sudo('cp -rf /home/bpzj/linux.conf/vsftpd/vsftpd.chroot_list /etc/vsftpd/vsftpd.chroot_list')
+    # 重启服务
+    sudo('service vsftpd restart')
+    # 新建ftp文件夹
+    sudo('mkdir /home/bpzj/ftp')
+    # 新建这个文件夹
+    sudo('mkdir /var/run/vsftpd')
+    sudo('mkdir /var/run/vsftpd/empty')
+
+
+def instomcat():
+    """安装Tomcat 8.0 """
+    # 更新配置文件
+    run('cd %s && git pull' % repo_folder)
+    # 下载 tomcat
+    sudo('wget http://mirrors.shu.edu.cn/apache/tomcat/tomcat-8/v8.0.49/bin/apache-tomcat-8.0.49.tar.gz')
+    # 删除原有的tomcat
+    sudo('rm -rf /usr/local/tomcat')
+    # 解压
+    sudo('tar -xvzf apache-tomcat-8.0.49.tar.gz')
+    # 注意这个mv命令，直接重名了，要保证local文件下没有tomcat才能重命名
+    # 所以上面删除了原有的 tomcat 文件夹
+    sudo('mv /home/bpzj/apache-tomcat-8.0.49 /usr/local/tomcat')
+    # 复制配置文件：profile、setenv.sh、catalina.sh、tomcat.service
+    sudo('cp -rf /home/bpzj/linux.conf/profile /etc/profile')
+    sudo('cp -rf /home/bpzj/linux.conf/tomcat/8.0.48-catalina/catalina.sh /usr/local/tomcat/bin/catalina.sh')
+    # 配置环境变量，这一句执行不成功，暂时未解决
+    run('source /etc/profile', pty=False)
+    # 更新 catalina.sh 配置文件
+    sudo('/usr/local/tomcat/bin/startup.sh', pty=False)
+    # 备用命令
+    # sudo /usr/local/tomcat/bin/shutdown.sh
+
+
+def insresin():
+    # 下载 resin
+    sudo('wget http://caucho.com/download/resin-4.0.55.tar.gz')
+    # 删除原有的resin
+    sudo('rm -rf /usr/local/resin')
+    # 注意这个mv命令，直接重名了，要保证local文件下没有resin才能重命名
+    # 所以上面删除了原有的 resin 文件夹
+    sudo('mv ./resin-4.0.55 /usr/local/resin')
+    sudo('rm -rf ./*resin*.gz')
+    sudo('cd /usr/local/resin && ./resin.sh start')
