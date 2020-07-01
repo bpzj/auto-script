@@ -60,7 +60,7 @@ echo "即将执行:"
 if [ -n "$process" ] ; then
     echo "    kill -9 $process"
 fi
-echo "    nohup java -jar $jarFile $args > $out &"
+echo "    nohup java -jar $jarFile $args > $out 2>&1 &"
 
 
 
@@ -90,7 +90,7 @@ if [ -n "$process" ] ; then
     kill -9 $process
 fi
 ################  执行命令  ################
-nohup java -jar $jarFile $args > $out &
+nohup java -jar $jarFile $args > $out 2>&1 &
 
 tail -f $out
 
