@@ -21,8 +21,8 @@ last=`stat $1 |grep Modify`
 while [[ "" == "" ]]; do
   update=`stat $1 |grep Modify`
   if [[ "$update" == "$last" ]]; then
-    echo "file is old"
-    sleep 1
+#    echo "file is old"
+    sleep 10
   else
     echo "file is updating"
     # 判断文件是否update完成, 如果文件update到一半执行命令, 会报错
@@ -33,7 +33,7 @@ while [[ "" == "" ]]; do
         if [ -n "$process" ] ; then
           kill -9 $process
         fi
-        cd /home/nginx/webapps && nohup java -jar $1 $2 > $log 2>&1 &
+        nohup java -jar $1 $2 > $log 2>&1 &
         # 把更新后的赋值给 last
         last=$update
 
