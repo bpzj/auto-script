@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # 通过检查本地文件是否变动, 来重启进程
+# TODO 增加项目参数, 适配不同的项目
 jarFile="/home/nginx/webapps/ypgl-1.0.0.jar"
 jarFile="/root/1.txt"
 
