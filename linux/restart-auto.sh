@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # 通过检查本地文件是否变动, 来重启进程
-# TODO 增加项目参数, 适配不同的项目
+# 后台运行本命令
+#  nohup bash ./restart-auto.sh  xxx.jar --spring.profiles.active=uat > restart.log &
 #  $# 为参数个数, $1 为第一个参数
 if [ $# -eq 0 ] ; then
   echo "没有参数, 请输入要重启的 jar 文件"
