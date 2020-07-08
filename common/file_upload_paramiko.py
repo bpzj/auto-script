@@ -32,7 +32,7 @@ def connect(conf: dict) -> paramiko.SSHClient:
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     ssh.connect(hostname=conf.get('host'), port=conf.get('port'),
-                username=conf.get('username'), password=conf.get('password'))
+                username=conf.get('username'), password=conf.get('password'),auth_timeout=20)
     return ssh
 
 
