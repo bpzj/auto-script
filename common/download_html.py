@@ -15,6 +15,7 @@ def crawl(pages: list, depth=None):
                     print("Could not open %s" % page)
                     continue
                 soup = BeautifulSoup(c.read(), features="lxml")
+
                 links = soup('a')  # finding all the sub_links
                 for link in links:
                     if 'href' in dict(link.attrs):
