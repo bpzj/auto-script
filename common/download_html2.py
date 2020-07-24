@@ -12,4 +12,6 @@ def download_file(url: str, file_name: str):
 
 if __name__ == '__main__':
     # download_file('https://docs.spring.io/spring-framework/docs/5.0.x/spring-framework-reference/core.html', 'core.html')
-    download_file('http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', 'stylesheets/font-awesome.min.css')
+    # download_file('http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', 'stylesheets/font-awesome.min.css')
+    # download_file('https://docs.spring.io/spring-framework/docs/5.0.x/spring-framework-reference/stylesheets/asciidoctor-spring.css', 'stylesheets/asciidoctor-spring.css')
+    download_file('https://docs.spring.io/spring-framework/docs/5.0.x/spring-framework-reference/tocbot-3.0.2/tocbot.css', 'tocbot-3.0.2/tocbot.css')
