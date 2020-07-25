@@ -26,14 +26,16 @@ while [[ "" == "" ]]; do
     sleep 10
   else
     echo "file is updating"
-    # 判断文件是否update完成, 如果文件update到一半执行命令, 会报错
+    # 判断文件是否 update完成, 如果文件update到一半执行命令, 会报错
     while [[ "" == "" ]]; do
       if [[ "$update" == "$last" ]]; then
-        echo "update file finish"
-        process=`ps -ef|grep "java -jar"|grep $1 |grep -v grep|awk '{print $2}'`
+        echo `date "+%m-%d %H:%M:%S"`" update file finish"
+
+        process=`ps -ef|grep "java -jar"|grep $1|grep -v grep|awk '{print $2}'`
         if [ -n "$process" ] ; then
           kill -9 $process
         fi
+
         nohup java -jar $1 $2 > $log 2>&1 &
         # 把更新后的赋值给 last
         last=$update

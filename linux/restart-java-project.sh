@@ -41,7 +41,7 @@ done
 ################  准备要执行的参数 ################
 jarFile=`ls|grep .jar$|sed -n "$num"p`
 process=`ps -ef|grep "java -jar"|grep "$jarFile" |grep -v grep|awk '{print $2}'`
-out=${jarFile/.jar/.out}
+log=${jarFile/.jar/.log}
 if [ -n "$process" ] ; then
     # todo 存在原来的进程 取原来的参数
     active=`ps -ef|grep "java -jar"|grep "$jarFile"|grep -v grep|awk -F'active=' '{print $2}'|awk 'NR==1{print $1}'`
@@ -60,7 +60,7 @@ echo "即将执行:"
 if [ -n "$process" ] ; then
     echo "    kill -9 $process"
 fi
-echo "    nohup java -jar $jarFile $args > $out 2>&1 &"
+echo "    nohup java -jar $jarFile $args > $log 2>&1 &"
 
 
 
@@ -90,7 +90,7 @@ if [ -n "$process" ] ; then
     kill -9 $process
 fi
 ################  执行命令  ################
-nohup java -jar $jarFile $args > $out 2>&1 &
+nohup java -jar $jarFile $args > $log 2>&1 &
 
-tail -f $out
+tail -f $log
 
