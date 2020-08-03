@@ -51,10 +51,10 @@ else
     args="-jar $jarFile"
     read -t 60 -p "spring boot的profile: " active
     read -t 120 -p "请输入额外参数: " other
-    if [ --n $active ]; then
+    if [ -n "$active" ]; then
         args="$args --spring.profiles.active=$active"
     fi
-    if [ ---n $other ]; then
+    if [ -n "$other" ]; then
         args="$args $other"
     fi
 fi
