@@ -3,6 +3,7 @@
 # 后台运行本命令
 #  nohup bash ./restart-auto.sh  xxx.jar --spring.profiles.active=uat > restart.log &
 #  $# 为参数个数, $1 为第一个参数
+# todo 考虑如何更方便的后台运行本脚本
 if [ $# -eq 0 ] ; then
   echo "没有参数, 请输入要重启的 jar 文件"
   exit 0
@@ -19,7 +20,7 @@ fi
 log=`echo $1 | sed 's/.jar$/.log/g'`
 # 上一次文件状态
 last=`stat $1 |grep Modify`
-while [[ "" == "" ]]; do
+while [[ 1 ]]; do
   update=`stat $1 |grep Modify`
   if [[ "$update" == "$last" ]]; then
 #    echo "file is old"
@@ -27,7 +28,7 @@ while [[ "" == "" ]]; do
   else
     echo "file is updating"
     # 判断文件是否 update完成, 如果文件update到一半执行命令, 会报错
-    while [[ "" == "" ]]; do
+    while [[ 1 ]]; do
       if [[ "$update" == "$last" ]]; then
         echo `date "+%m-%d %H:%M:%S"`" update file finish"
 
