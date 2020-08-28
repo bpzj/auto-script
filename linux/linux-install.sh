@@ -28,10 +28,10 @@ ins_pre=""
 os=""
 # = 与 == 在 [ ] 中表示判断(字符串比较)时是等价的
 # 获取当前系统发行版
-if [[ `cat /etc/issue` =~ "CentOS"  || `cat /etc/redhat-release` =~ "CentOS" ]]; then
+if [[ `cat /etc/redhat-release` =~ "CentOS" ]]; then
   os="CentOS"
   ins_pre=${ins_li[0]}
-elif [[ `uname -a` =~ "Ubuntu" ]]; then
+elif [[ `uname -a` =~ "Ubuntu" || `uname -a` =~ "Debian" ]]; then
 	os="Ubuntu"
 	ins_pre=${ins_li[1]}
 elif [[ `uname -a` =~ "Darwin" ]]; then
@@ -57,16 +57,18 @@ fi
 # 是否安装 open-jdk 8
 result=`command -v javac | grep -w "javac" -c`
 if [ $result -le 0 ]; then
-  checkInput "Do you want to install open jdk 8: ";
+  checkInput "Do you want to install open jdk: ";
   if [ "$input" == "Y" -o "$input" = "y" ] ; then
     if [[ $os == "CentOS" ]] ; then
-      yum install java-1.8.0-openjdk
+      yum install java-1.8.0-openjdk -y
       yum install java-1.8.0-openjdk-devel
     elif [[ $os == "Ubuntu" ]]; then
-      "$ins_pre" install openjdk-8-jdk-headless
+      "$ins_pre" install default-jdk -y
     fi
   fi
 else
   echo "JDK installed"
 fi
+
+
 
