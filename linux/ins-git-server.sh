@@ -80,7 +80,8 @@ chmod 700 /home/git/.ssh
 chmod 600 /home/git/.ssh/authorized_keys
 
 sudo systemctl restart sshd
+echo "安装git服务器完成"
 
 # 6. 取消git用户ssh登陆，而只能使用git，有问题，暂时不弄了
-# sed -E "s/^git(.*)git:\/bin.*/git\1git:\/bin\/git-shell/" /etc/passwd
+# sed -i -E "s/^git(.*)git:\/bin.*/git\1git:\/bin\/git-shell/" /etc/passwd
 
