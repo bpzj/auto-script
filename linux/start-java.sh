@@ -1,7 +1,7 @@
 #!/bin/bash
 
 count=`find . -maxdepth 1 -name '*.jar'|wc -l`
-if [ "$count" -le 0 ] ; then
+if [ $count -le 0 ] ; then
     echo "脚本所在目录下没有jar文件"
     exit 0
 fi
@@ -31,7 +31,7 @@ function checkNum() {
 }
 echo ""
 checkNum "请输入要启动的项目: "
-while [ "$num" -gt "$count" ]
+while [ $num -gt $count ]
 do
     echo "不存在数字对应的项目"
     checkNum "请输入要启动的项目: "
@@ -42,15 +42,24 @@ done
 jarFile=`ls|grep .jar$|sed -n "$num"p`
 process=`ps -ef|grep "java"|grep "$jarFile" |grep -v grep|awk '{print $2}'`
 log=${jarFile/.jar/.log}
+hprof=${jarFile/.jar/.hprof}
 if [ -n "$process" ] ; then
     # todo 存在原来的进程 取原来的参数
-#    args=`ps -ef|grep "java"|grep "$jarFile"|grep -v grep|sed -r 's/.*java {1,}-jar {1,}.*?.jar {1,}//'`
     args=`ps -ef|grep "java"|grep "$jarFile"|grep -v grep|sed -r 's/.*java //'`
 else
     # 如果不存在原来的进程，说明是新启动，可能需要加额外参数
-    args="-jar $jarFile"
-    read -t 60 -p "spring boot的profile: " active
-    read -t 120 -p "请输入额外参数: " other
+    args=""
+    read -t 120 -p "请输入springboot项目启动的profile: " active
+    read -t 120 -p "请输入远程调试端口(不开启直接回车): " debug
+    read -t 120 -p "是否开启溢出转存  (不开启直接回车): " dump
+    read -t 120 -p "请输入其他参数                   : " other
+    if [ -n "$debug" ]; then
+        args="$args -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$debug"
+    fi
+    if [ -n "$dump" ]; then
+        args="$args -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$hprof"
+    fi
+    args="$args -jar $jarFile"
     if [ -n "$active" ]; then
         args="$args --spring.profiles.active=$active"
     fi
@@ -67,6 +76,7 @@ if [ -n "$process" ] ; then
     echo "    kill -9 $process"
 fi
     echo "    nohup java $args > $log 2>&1 &"
+
 
 
 
@@ -94,9 +104,9 @@ fi
 
 ################  执行命令  ################
 if [ -n "$process" ] ; then
-  kill -9 $process
+    kill -9 $process
 fi
-  nohup java $args > $log 2>&1 &
+    nohup java $args > $log 2>&1 &
 
 tail -f $log
 
