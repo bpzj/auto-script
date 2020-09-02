@@ -23,7 +23,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bpzj/auto-install/master
 
 [创建一个Git服务器](./linux/ins-git-server.sh)
 
-[自动重启java项目](linux/restart-java.sh)
+[自动重启java项目](linux/start-java.sh)
 
 [配置ssh通过秘钥访问](./linux/ssh-over-RSA.sh)
 
