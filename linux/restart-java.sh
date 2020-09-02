@@ -5,47 +5,50 @@ if [ "$count" -le 0 ] ; then
     echo "脚本所在目录下没有jar文件"
     exit 0
 fi
-
-
-################  显示出来所有的jar文件  ################
-echo "当前路径下的项目:"
-for ((i=1;i<=$count;i++))
-do
-    x=${i}"p"
-    name=`ls|grep .jar$|sed -n "$x"`
-    echo "    "$i":   "$name
-done
-
-
-################    确定要启动的项目   ################ 
-num="0"
-# 校验输入的是否为数字
-function checkNum() {
-    while true; do
-        read -t 60 -p "$1" num
-        case $num in
-            [1-9]|[1-9][0-9]* ) break;;
-            * ) echo "请输入数字: 1-"$count;;
-        esac
+jarFile=''
+if [[ -f $1 && $1 =~ '.jar' ]] ; then
+    $jarFile="$1"
+else
+    ################  显示出来所有的jar文件  ################
+    echo "当前路径下的项目:"
+    for ((i=0;i<=$count;i++))
+    do
+        x=${i}"p"
+        name=`ls|grep .jar$|sed -n "$x"`
+        echo "    "$i":   "$name
     done
-}
-echo ""
-checkNum "请输入要启动的项目: "
-while [ "$num" -gt "$count" ]
-do
-    echo "不存在数字对应的项目"
+
+    ################    确定要启动的项目   ################
+    num="-1"
+    # 校验输入的是否为数字
+    function checkNum() {
+        while true; do
+            read -t 59 -p "$1" num
+            case $num in
+                [0-9]|[1-9][0-9]* ) break;;
+                * ) echo "请输入数字: 0-"$count;;
+            esac
+        done
+    }
+    echo ""
     checkNum "请输入要启动的项目: "
-done
+    while [ "$num" -gt "$count" ]
+    do
+        echo "不存在数字对应的项目"
+        checkNum "请输入要启动的项目: "
+    done
+    $jarFile=`ls|grep .jar$|sed -n "$num"p`
+fi
+
 
 
 ################  准备要执行的参数 ################
-jarFile=`ls|grep .jar$|sed -n "$num"p`
-process=`ps -ef|grep "java"|grep "$jarFile" |grep -v grep|awk '{print $2}'`
+process=`ps -ef|grep "java.*.jar"|grep "$jarFile" |grep -v grep|grep -v .sh|awk '{print $2}'`
 log=${jarFile/.jar/.log}
 if [ -n "$process" ] ; then
     # todo 存在原来的进程 取原来的参数
 #    args=`ps -ef|grep "java"|grep "$jarFile"|grep -v grep|sed -r 's/.*java {1,}-jar {1,}.*?.jar {1,}//'`
-    args=`ps -ef|grep "java"|grep "$jarFile"|grep -v grep|sed -r 's/.*java //'`
+    args=`ps -ef|grep "java.*.jar"|grep "$jarFile"|grep -v grep|grep -v .sh|sed -r 's/.*java //'`
 else
     # 如果不存在原来的进程，说明是新启动，可能需要加额外参数
     args="-jar $jarFile"
