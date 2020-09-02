@@ -20,20 +20,20 @@ else
     done
 
     ################    确定要启动的项目   ################
-    num="-1"
+    num="0"
     # 校验输入的是否为数字
     function checkNum() {
         while true; do
-            read -t 59 -p "$1" num
+            read -t 60 -p "$1" num
             case $num in
-                [0-9]|[1-9][0-9]* ) break;;
+                [1-9]|[1-9][0-9]* ) break;;
                 * ) echo "请输入数字: 1-"$count;;
             esac
         done
     }
     echo ""
     checkNum "请输入要启动的项目: "
-    while [ "$num" -gt "$count" ]
+    while [ $num -gt $count ]
     do
         echo "不存在数字对应的项目"
         checkNum "请输入要启动的项目: "
@@ -46,15 +46,29 @@ fi
 ################  准备要执行的参数 ################
 process=`ps -ef|grep "java.*.jar"|grep "$jarFile" |grep -v grep|grep -v .sh|awk '{print $2}'`
 log=${jarFile/.jar/.log}
+hprof=${jarFile/.jar/.hprof}
 if [ -n "$process" ] ; then
     # todo 存在原来的进程 取原来的参数
 #    args=`ps -ef|grep "java"|grep "$jarFile"|grep -v grep|sed -r 's/.*java {1,}-jar {1,}.*?.jar {1,}//'`
     args=`ps -ef|grep "java.*.jar"|grep "$jarFile"|grep -v grep|grep -v .sh|sed -r 's/.*java //'`
 else
     # 如果不存在原来的进程，说明是新启动，可能需要加额外参数
-    args="-jar $jarFile"
-    read -t 60 -p "spring boot的profile: " active
-    read -t 120 -p "请输入额外参数: " other
+    args=""
+    read -t 120 -p "输入想要启动的yml配置文件: " active
+    read -t 120 -p "远程调试端口(不开启直接回车): " debug
+    read -t 120 -p "开启溢出转存(不开启直接回车): " dump
+    read -t 120 -p "请输入JVM虚拟机参数         : " jvm
+    read -t 120 -p "请输入应用程序参数          : " other
+     if [ -n "$jvm" ]; then
+        args="$args $jvm"
+    fi
+    if [ -n "$debug" ]; then
+        args="$args -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$debug"
+    fi
+    if [ -n "$dump" ]; then
+        args="$args -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$hprof"
+    fi
+    args="$args -jar $jarFile"
     if [ -n "$active" ]; then
         args="$args --spring.profiles.active=$active"
     fi
@@ -90,7 +104,7 @@ function checkInput() {
         esac
     done
 }
-checkInput "确认(Y/N)："
+checkInput "确认(Enter=Y/Y/y/N/n)："
 if [ $input == "N" -o $input = "n" ] ; then
     exit 0
 fi
