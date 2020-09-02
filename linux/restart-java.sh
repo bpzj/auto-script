@@ -5,13 +5,14 @@ if [ "$count" -le 0 ] ; then
     echo "脚本所在目录下没有jar文件"
     exit 0
 fi
+
 jarFile=''
 if [[ -f $1 && $1 =~ '.jar' ]] ; then
-    $jarFile="$1"
+    jarFile=$1
 else
     ################  显示出来所有的jar文件  ################
     echo "当前路径下的项目:"
-    for ((i=0;i<=$count;i++))
+    for ((i=1;i<=$count;i++))
     do
         x=${i}"p"
         name=`ls|grep .jar$|sed -n "$x"`
@@ -26,7 +27,7 @@ else
             read -t 59 -p "$1" num
             case $num in
                 [0-9]|[1-9][0-9]* ) break;;
-                * ) echo "请输入数字: 0-"$count;;
+                * ) echo "请输入数字: 1-"$count;;
             esac
         done
     }
@@ -37,7 +38,7 @@ else
         echo "不存在数字对应的项目"
         checkNum "请输入要启动的项目: "
     done
-    $jarFile=`ls|grep .jar$|sed -n "$num"p`
+    jarFile=`ls|grep .jar$|sed -n "$num"p`
 fi
 
 
