@@ -194,8 +194,8 @@ if __name__ == '__main__':
     watch_file(config.get('.git_path'), upload_callback, "start")
 
     # maven_package(project_path)  # 本地打包项目
-    # deploy('blj-test')
-    # deploy('blj-test')
+    # 部署项目('blj-test')
+    # 部署项目('blj-test')
     # filePath = 'C:\\myLearning\\pythonLearning201712\\carComments\\01\\'
 
     # print(i,j,k)

@@ -3,6 +3,6 @@
 *.iml
 *.swp
 *.jar
-/python/deploy/deploy_machine_mine.json
+/python/部署项目/deploy_machine_mine.json
 /.vs
 *.log

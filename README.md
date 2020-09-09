@@ -11,7 +11,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bpzj/auto-install/master
 ```
 
 ## 通用 Python 脚本
-[监视git目录, 有新提交上传指定文件到远程服务器](python/auto_deploy_use_paramiko.py)
+[监视git目录, 有新提交上传指定文件到远程服务器](python/部署项目/auto_deploy_use_paramiko.py)
 
 [执行java maven打包命令](python/test_java_maven_pkg.py)
 
