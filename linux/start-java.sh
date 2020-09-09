@@ -50,6 +50,9 @@ hprof=${jarFile/.jar/.hprof}
 if [ -n "$process" ] ; then
     # todo 存在原来的进程 取原来的参数
 #    args=`ps -ef|grep "java"|grep "$jarFile"|grep -v grep|sed -r 's/.*java {1,}-jar {1,}.*?.jar {1,}//'`
+    if [[ -z "$1" ]] ; then
+        echo -e "\033[31m支持使用 bash ""$0"" ""$jarFile"" 来重启应用\033[0m"
+    fi
     args=`ps -ef|grep "java.*.jar"|grep "$jarFile"|grep -v grep|grep -v .sh|sed -r 's/.*java //'`
 else
     # 如果不存在原来的进程，说明是新启动，可能需要加额外参数
