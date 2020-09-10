@@ -108,6 +108,7 @@ function checkInput() {
     done
 }
 
+# 循环遍历参数
 for arg in $*
   do
      if [ "$arg" == '-y' ]; then
