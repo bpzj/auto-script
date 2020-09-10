@@ -92,7 +92,7 @@ fi
 
 
 ################  确认执行命令  ################
-input="N"
+input=''
 # 通用校验输入的方法
 function checkInput() {
     while true; do
@@ -107,7 +107,17 @@ function checkInput() {
         esac
     done
 }
-checkInput "确认(Enter=Y/Y/y/N/n)："
+
+for arg in $*
+  do
+     if [ "$arg" == '-y' ]; then
+        input='y'
+     fi
+  done
+
+if [[ -z $input ]]; then
+    checkInput "确认(Enter=Y/Y/y/N/n)："
+fi
 if [ $input == "N" -o $input = "n" ] ; then
     exit 0
 fi
