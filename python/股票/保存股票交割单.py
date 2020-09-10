@@ -9,7 +9,7 @@ from xlwings import Sheet
 """用于保存股票交割单到excel文件， 每只股票单独一个Excel文件 """
 
 excel_path = r'E:\\OneDrive\\文档\\2、生活口才\\股票交割单\\'
-stock_list: List[str] = ['兴业银行']
+stock_list: List[str] = ['中国国航']
 start_row = 5
 
 
@@ -31,14 +31,19 @@ if __name__ == '__main__':
         try:
             xlsx = xlwings.Book(excel_path + name + '交割单.xlsx')
             sheet = Sheet(xlsx.sheets[0])
-        except:
+        except FileNotFoundError as e:
+            print(e)
             continue
 
         for i in li:
             line = i.split('\t')[0:9]
-            if line[0] == today and line[2] == name:
+            if line[0] <= today and line[2] == name:
                 sheet.api.Rows(start_row).Insert()
                 for i in range(1, len(line) + 1):
                     sheet.range(start_row, i).value = line[i - 1]
+                if line[3] == '买':
+                    sheet.range(start_row, len(line)+1).value = line[4]
+                else:
+                    sheet.range(start_row, len(line)+1).value = '-'+line[4]
 
                 # name = line[2] + '交割单.xlsx'
