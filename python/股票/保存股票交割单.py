@@ -59,4 +59,4 @@ if __name__ == '__main__':
     today = datetime.datetime.today().date().strftime('%Y%m%d')
     data = get_clipboard()
     li = parse_to_list(data)
-    save_by_stock_name_and_date(li, '兴业银行', today)
+    save_by_stock_name_and_date(li, '中国国航', today)
