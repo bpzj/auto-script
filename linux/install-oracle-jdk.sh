@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Linux下安装Git服务器
 # 1. 首先登陆root用户
 if [ `whoami` == "root" ] ; then
     echo "root has login"
