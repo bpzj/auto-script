@@ -7,8 +7,8 @@ import win32clipboard as w
 import win32con
 
 create_table_sql = """create table check_list (id integer constraint check_list_pk primary key autoincrement,
-                        deal_date text, code text, name text, b_s text, quantity int,
-                        price numeric, actual_amount numeric, available_balance int); """
+                        date text, code text, name text, b_s text, quantity int,
+                        price decimal(10,4), actual_amount decimal(15,4), available_balance int, contract int); """
 
 
 def get_clipboard() -> str:
@@ -25,7 +25,9 @@ def parse_to_list(clip: str) -> List[List[str]]:
     lines = clip.split('\r\n')
     result = []
     for i in range(1, len(lines)):
-        result.append(lines[i].split('\t')[0:9])
+        line = lines[i].split('\t')[0:14]
+        if line[2] is not 'Ｒ-001':
+            result.append(line)
     return result
 
 
@@ -33,13 +35,11 @@ def save_today_stock_check_list(lines: List[List[str]]):
     db_file = r'E:\\OneDrive\\文档\\2、生活口才\\股票交割单\\所有交割单.db'
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
-    s1 = '\',\''
-    s2 = ','
     for line in lines:
-        value = '(\'' + line[0] + s1 + line[1] + s1 + line[2] + s1 + line[3] + '\'' + \
-                s2 + line[4] + s2 + line[5] + s2 + line[8] + s2 + line[7] + ')'
+        value = get_insert_sql(line)
+        # print(value)
         cursor.execute(
-            'insert into check_list (deal_date, code, name, b_s, quantity, price, actual_amount, available_balance) values' + value)
+            'insert into check_list (date, code, name, b_s, quantity, price, actual_amount, available_balance, contract) values' + value)
 
     # 通过rowcount获得插入的行数:
     # print('rowcount =', cursor.rowcount)
@@ -63,6 +63,33 @@ def save_today_stock_check_list(lines: List[List[str]]):
     # name = line[2] + '交割单.xlsx'
 
 
+def get_insert_sql(line):
+    s2 = ','
+    s3 = ',\''
+    s1 = '\',\''
+    # print(line[2])
+    contract_no = s3 if line[13] == '' else (s3 + line[13])
+    value = '(\'' + s1.join(line[0:4]) + '\',' + s2.join(line[4:6]) + s2 + line[8] + s2 + line[7] + contract_no + '\')'
+    return value
+
+
+def create_table():
+    db_file = r'E:\\OneDrive\\文档\\2、生活口才\\股票交割单\\所有交割单.db'
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+    cursor.execute(create_table_sql)
+
+    # 通过rowcount获得插入的行数:
+    # print('rowcount =', cursor.rowcount)
+    # 关闭Cursor:
+    cursor.close()
+    # 提交事务:
+    conn.commit()
+    # 关闭Connection:
+    conn.close()
+
+
 # todo 把 main 方法提出为函数
 if __name__ == '__main__':
+    # create_table()
     save_today_stock_check_list(parse_to_list(get_clipboard()))
