@@ -6,12 +6,11 @@ from typing import List
 import win32clipboard as w
 import win32con
 
+db_file = r'E:\\OneDrive\\文档\\2、生活口才\\股票交割单\\所有交割单.db'
 create_table_sql = """create table check_list (id integer constraint check_list_pk primary key autoincrement,
                         date text, code text, name text, b_s text, quantity int,
                         price decimal(10,4), actual_amount decimal(15,4), available_balance int, contract int); """
 
-
-# todo 根据表头得到每一列具体是什么, 把每一列的下标做成变量， 不写死
 
 class DataIndex:
     def __init__(self):
@@ -65,17 +64,11 @@ def get_clipboard() -> str:
     return d.decode('GBK')
 
 
-def get_date_type(param):
-    """ 返回剪切板的数据类型： 交割单， 对账单，  """
-    pass
-
-
 def parse_to_list(clip: str) -> List[List[str]]:
     if "成交日期" not in clip or "\r\n" not in clip:
         # todo 抛出异常
         return []
     lines = clip.split('\r\n')
-    get_date_type(lines[0])
     result = []
     for i in range(0, len(lines)):
         line = lines[i].split('\t')[0:14]
@@ -87,7 +80,6 @@ def parse_to_list(clip: str) -> List[List[str]]:
 def save_today_stock_check_list(lines: List[List[str]]):
     if not lines:
         return
-    db_file = r'E:\\OneDrive\\文档\\2、生活口才\\股票交割单\\所有交割单.db'
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
     data_idx = get_index(lines[0])
@@ -99,7 +91,7 @@ def save_today_stock_check_list(lines: List[List[str]]):
         v = cursor.fetchall()
         if not v and len(v) == 0:
             print(v)
-            # cursor.execute(sql)
+            cursor.execute(sql)
 
     # 通过rowcount获得插入的行数:
     # print('rowcount =', cursor.rowcount)
@@ -119,7 +111,7 @@ def get_insert_sql(data_idx: DataIndex, line: List[str]):
         actual_amount = line[data_idx.actual_amount_idx]
     else:
         # todo 真实金额
-        actual_amount = quantity * price
+        actual_amount = quantity * float(price)
     if data_idx.available_balance_idx >= 0:
         available_balance = line[data_idx.available_balance_idx]
     time = line[data_idx.time_idx] if data_idx.time_idx >= 0 else None
@@ -141,20 +133,29 @@ def create_table():
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
     cursor.execute(create_table_sql)
-
-    # 通过rowcount获得插入的行数:
-    # print('rowcount =', cursor.rowcount)
-    # 关闭Cursor:
     cursor.close()
-    # 提交事务:
     conn.commit()
-    # 关闭Connection:
     conn.close()
 
 
-# todo 把 main 方法提出为函数
+def sort_out():
+    li = parse_to_list(get_clipboard())
+    data_idx = get_index(li[0])
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+    for line in li[1:]:
+        contract = line[data_idx.contract_idx]
+        if contract != '':
+            sql = 'update check_list set time=\'' + line[data_idx.time_idx] + '\' where date=\'' + line[data_idx.date_idx] + '\' and contract=\'' + contract +'\''
+            cursor.execute(sql)
+
+    # cursor.execute('select id ')
+    cursor.close()
+    conn.commit()
+    conn.close()
 
 
 if __name__ == '__main__':
     # create_table()
-    save_today_stock_check_list(parse_to_list(get_clipboard()))
+    sort_out()
+    # save_today_stock_check_list(parse_to_list(get_clipboard()))
