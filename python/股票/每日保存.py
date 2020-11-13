@@ -138,7 +138,7 @@ def create_table():
     conn.close()
 
 
-def sort_out():
+def update_deal_time():
     li = parse_to_list(get_clipboard())
     data_idx = get_index(li[0])
     conn = sqlite3.connect(db_file)
@@ -157,5 +157,5 @@ def sort_out():
 
 if __name__ == '__main__':
     # create_table()
-    sort_out()
+    update_deal_time()
     # save_today_stock_check_list(parse_to_list(get_clipboard()))
