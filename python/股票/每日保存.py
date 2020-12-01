@@ -217,10 +217,30 @@ def update_available_balance_and_actual_amount(item_list: List[CheckItem]):
             sql = 'update check_list set actual_amount=' + str(item.actual_amount) \
                   + ', available_balance=' + str(item.available_balance) \
                   + ' where date=\'' + item.date + '\' and contract=\'' + contract + '\''
-            print(sql)
-            # cursor.execute(sql)
+            # print(sql)
+            cursor.execute(sql)
 
     # cursor.execute('select id ')
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+def summary():
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+    cursor.execute('select code,name from check_list group by code')
+    v = cursor.fetchall()
+    for code, name in v:
+        cursor.execute('select available_balance from check_list where code=\''+code+'\' and quantity!=0 order by id desc limit 1')
+        available_balance, = cursor.fetchone()
+        cursor.execute('select round(sum(actual_amount),2) from check_list where code=\''+code+'\'')
+        sum, = cursor.fetchone()
+        if available_balance==0:
+            print(name+' \t盈亏 '+str(sum))
+        else:
+            # todo
+            print(name+' \t成本 '+str(round(-sum/available_balance,2)))
+
     cursor.close()
     conn.commit()
     conn.close()
@@ -228,9 +248,6 @@ def update_available_balance_and_actual_amount(item_list: List[CheckItem]):
 
 if __name__ == '__main__':
     # create_table()
-    # update_deal_time()
     # save_today_stock_check_list(parse_to_list(get_clipboard()))
-    update_available_balance_and_actual_amount(parse_update(get_clipboard()))
-    # l = parse_to_list(get_clipboard())
-    # for i in l:
-    #     print(get_insert_sql(i))
+    # update_available_balance_and_actual_amount(parse_update(get_clipboard()))
+    summary()
