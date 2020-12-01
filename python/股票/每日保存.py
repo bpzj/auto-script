@@ -30,7 +30,7 @@ class DataIndex:
 class CheckItem:
     def __init__(self, date: str = None, time: str = None, code: str = None, name: str = None,
                  bs: str = None, quantity: int = None, price: float = None, available_balance: int = None,
-                 amount: float = 0, contract: str = None):
+                 actual_amount: float = 0, amount: float = 0, contract: str = None):
         self.date = date
         self.time = time
         self.code = code
@@ -38,7 +38,7 @@ class CheckItem:
         self.bs = bs  # 买或卖
         self.quantity = quantity  # 成交量
         self.price = price  # 成交价格
-        self.actual_amount = 0  # 实际发生金额
+        self.actual_amount = actual_amount  # 实际发生金额
         self.amount = amount  # 成交金额
         self.available_balance = available_balance  # 可用余额(数量)
         self.contract = contract  # 合同号
@@ -83,7 +83,7 @@ def get_clipboard() -> List[List[str]]:
     d = w.GetClipboardData(win32con.CF_TEXT)
     w.CloseClipboard()
     clip = d.decode('GBK')
-    if '成交日期' not in clip or '\r\n' not in clip or '成交时间' not in clip or '\t' not in clip:
+    if '成交日期' not in clip or '\r\n' not in clip or '\t' not in clip:
         print("剪贴板没有成交记录")
         exit(-1)
     lines = clip.split('\r\n')
@@ -94,11 +94,9 @@ def get_clipboard() -> List[List[str]]:
 
 
 def get_check_item(idxes: DataIndex, li: List[str]) -> CheckItem:
-    available_balance = int(li[idxes.available_balance_idx]) if idxes.available_balance_idx else None
     a = CheckItem(date=li[idxes.date_idx], time=li[idxes.time_idx], code=li[idxes.code_idx], name=li[idxes.name_idx],
                   bs=li[idxes.bs_idx], quantity=int(li[idxes.quantity_idx]), price=float(li[idxes.price_idx]),
-                  available_balance=available_balance, amount=float(li[idxes.amount_idx]),
-                  contract=li[idxes.contract_idx])
+                  amount=float(li[idxes.amount_idx]), contract=li[idxes.contract_idx])
     if a.amount == 0:
         a.actual_amount = 0
         return a
@@ -138,9 +136,10 @@ def parse_to_list(str_list: List[List[str]]) -> List[CheckItem]:
     data_idx = get_index(str_list[0])
     result = []
     for line in str_list[1:]:
-        if line[data_idx.code_idx] != 'Ｒ-001' and line[data_idx.name_idx] != '新增证券':
-            if (line[data_idx.bs_idx]) == '配':
-                更改配债配股(data_idx, line, str_list)
+        name = line[data_idx.name_idx]
+        if name != 'Ｒ-001' and name != '新增证券' and name != '登记指定':
+            # if (line[data_idx.bs_idx]) == '配':
+            #     更改配债配股(data_idx, line, str_list)
             result.append(get_check_item(data_idx, line))
     result.sort(key=lambda x: (x.date + x.time) if x.time != '' else (x.date + '99'))
     return result
@@ -151,14 +150,14 @@ def save_today_stock_check_list(lines: List[CheckItem]):
         return
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
-    for item in lines[1:]:
+    for item in lines:
         sql = get_insert_sql(item)
         cursor.execute(
             'select * from check_list where date=\'' + item.date + '\' and contract=\'' + item.contract + '\'')
         v = cursor.fetchall()
         # todo 根据日期和合同号判断数据库中是否已经保存过了
-        if not v and len(v) == 0:
-            cursor.execute(sql)
+        # if not v and len(v) == 0:
+        cursor.execute(sql)
 
     # 通过rowcount获得插入的行数:
     # print('rowcount =', cursor.rowcount)
@@ -190,17 +189,36 @@ def create_table():
     conn.close()
 
 
-def update_deal_time():
-    li = parse_to_list(get_clipboard())
-    data_idx = get_index(li[0])
+def get_update(idxes: DataIndex, li: List[str]) -> CheckItem:
+    a = CheckItem(date=li[idxes.date_idx], code=li[idxes.code_idx], name=li[idxes.name_idx],
+                  bs=li[idxes.bs_idx], actual_amount=float(li[idxes.actual_amount_idx]),
+                  available_balance=int(li[idxes.available_balance_idx]), contract=li[idxes.contract_idx])
+    return a
+
+
+def parse_update(str_list: List[List[str]]) -> List[CheckItem]:
+    data_idx = get_index(str_list[0])
+    if not data_idx.actual_amount_idx or not data_idx.available_balance_idx or not data_idx.contract_idx:
+        print('剪切板内容不是交割单')
+    result = []
+    for line in str_list[1:]:
+        name = line[data_idx.name_idx]
+        if name != 'Ｒ-001' and name != '新增证券' and name != '登记指定':
+            result.append(get_update(data_idx, line))
+    return result
+
+
+def update_available_balance_and_actual_amount(item_list: List[CheckItem]):
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
-    for line in li[1:]:
-        contract = line[data_idx.contract_idx]
+    for item in item_list:
+        contract = item.contract
         if contract != '':
-            sql = 'update check_list set time=\'' + line[data_idx.time_idx] + '\' where date=\'' + line[
-                data_idx.date_idx] + '\' and contract=\'' + contract + '\''
-            cursor.execute(sql)
+            sql = 'update check_list set actual_amount=' + str(item.actual_amount) \
+                  + ', available_balance=' + str(item.available_balance) \
+                  + ' where date=\'' + item.date + '\' and contract=\'' + contract + '\''
+            print(sql)
+            # cursor.execute(sql)
 
     # cursor.execute('select id ')
     cursor.close()
@@ -212,6 +230,7 @@ if __name__ == '__main__':
     # create_table()
     # update_deal_time()
     # save_today_stock_check_list(parse_to_list(get_clipboard()))
-    l = parse_to_list(get_clipboard())
-    for i in l:
-        print(get_insert_sql(i))
+    update_available_balance_and_actual_amount(parse_update(get_clipboard()))
+    # l = parse_to_list(get_clipboard())
+    # for i in l:
+    #     print(get_insert_sql(i))
