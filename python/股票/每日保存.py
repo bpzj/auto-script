@@ -153,11 +153,13 @@ def save_today_stock_check_list(lines: List[CheckItem]):
     for item in lines:
         sql = get_insert_sql(item)
         cursor.execute(
-            'select * from check_list where date=\'' + item.date + '\' and contract=\'' + item.contract + '\'')
-        v = cursor.fetchall()
+            'select id from check_list where date=\'' + item.date + '\' and contract=\'' + item.contract + '\'')
+        v, = cursor.fetchone()
         # todo 根据日期和合同号判断数据库中是否已经保存过了
-        # if not v and len(v) == 0:
-        cursor.execute(sql)
+        if v:
+            print('已存在记录')
+        else:
+            cursor.execute(sql)
 
     # 通过rowcount获得插入的行数:
     # print('rowcount =', cursor.rowcount)
