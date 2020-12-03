@@ -225,21 +225,23 @@ def update_available_balance_and_actual_amount(item_list: List[CheckItem]):
     conn.commit()
     conn.close()
 
+
 def summary():
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
     cursor.execute('select code,name from check_list group by code')
     v = cursor.fetchall()
     for code, name in v:
-        cursor.execute('select available_balance from check_list where code=\''+code+'\' and quantity!=0 order by id desc limit 1')
+        cursor.execute(
+            'select available_balance from check_list where code=\'' + code + '\' and quantity!=0 order by id desc limit 1')
         available_balance, = cursor.fetchone()
-        cursor.execute('select round(sum(actual_amount),2) from check_list where code=\''+code+'\'')
+        cursor.execute('select round(sum(actual_amount),2) from check_list where code=\'' + code + '\'')
         sum, = cursor.fetchone()
-        if available_balance==0:
-            print(name+' \t盈亏 '+str(sum))
+        if available_balance == 0:
+            print(name + ' \t盈亏 ' + str(sum))
         else:
             # todo
-            print(name+' \t成本 '+str(round(-sum/available_balance,2)))
+            print(name + ' \t成本 ' + str(round(-sum / available_balance, 2)))
 
     cursor.close()
     conn.commit()
