@@ -154,7 +154,8 @@ def save_today_stock_check_list(lines: List[CheckItem]):
         sql = get_insert_sql(item)
         cursor.execute(
             'select id from check_list where date=\'' + item.date + '\' and contract=\'' + item.contract + '\'')
-        v, = cursor.fetchone()
+
+        v = cursor.fetchone()
         # todo 根据日期和合同号判断数据库中是否已经保存过了
         if v:
             print('已存在记录')
@@ -218,7 +219,7 @@ def update_available_balance_and_actual_amount(item_list: List[CheckItem]):
         if contract != '':
             sql = 'update check_list set actual_amount=' + str(item.actual_amount) \
                   + ', available_balance=' + str(item.available_balance) \
-                  + ' where date=\'' + item.date + '\' and contract=\'' + contract + '\''
+                  + ' where date=\'' + item.date + '\' and contract=\'' + contract + '\' and available_balance is null'
             # print(sql)
             cursor.execute(sql)
 
@@ -253,5 +254,5 @@ def summary():
 if __name__ == '__main__':
     # create_table()
     # save_today_stock_check_list(parse_to_list(get_clipboard()))
-    # update_available_balance_and_actual_amount(parse_update(get_clipboard()))
-    summary()
+    update_available_balance_and_actual_amount(parse_update(get_clipboard()))
+    # summary()
