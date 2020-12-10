@@ -2,7 +2,7 @@ linux 系统安装git服务器
 说明：只是简单git服务器，适合个人使用，无页面
 
 1. 在linux上安装git仓库服务
-    1.1 在linux服务器上运行ins-git-server.sh脚本
+    1.1 在linux服务器上运行install-git-server.sh脚本
 
         1.1.1 脚本说明（也就是具体步骤）：
             (1) 登陆root用户 

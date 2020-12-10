@@ -38,7 +38,7 @@ elif [[ `uname -a` =~ "Darwin" ]]; then
 	os="macOS"
 	ins_pre=${ins_li[2]}
 else
-	echo "system unsupport, exit."
+	echo "system unsupported, exit."
 	exit 0
 fi
 echo "system is $os."

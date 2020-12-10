@@ -1,4 +1,4 @@
-
+# 关闭无用的服务
 sudo apt remove --purge bluetooth
 sudo systemctl stop bluetooth
 sudo systemctl disable bluetooth
