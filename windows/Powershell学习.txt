@@ -2,4 +2,5 @@
     运行 get-executionpolicy 显示 执行策略, 显示Restricted即不允许执行任何脚本。
     执行策略更改:  set-executionpolicy remotesigned
 
-2
+2  http/https下载文件 Invoke-WebRequest：
+    Invoke-WebRequest
