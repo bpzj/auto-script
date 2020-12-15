@@ -2,8 +2,8 @@ import re
 
 from docx import Document as openDoc
 from docx.document import Document
-
-document: Document = openDoc(r"C:\Users\bpzj\Desktop\Unix编程艺术\Unix编程艺术.docx")
+# pip install python-docx
+document: Document = openDoc(r"C:\Users\bpzj\Desktop\文字文稿1.docx")
 
 for paragraph in document.paragraphs:
     if len(paragraph.text) > 1:
@@ -19,4 +19,6 @@ for paragraph in document.paragraphs:
         paragraph.text = txt
         print(txt)  # 打印各段落内容文本
 
-document.save(r"C:\Users\bpzj\Desktop\Unix编程艺术\Unix编程艺术.docx")
+document.save(r"C:\Users\bpzj\Desktop\文字文稿2.docx")
+
+""
