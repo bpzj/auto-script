@@ -4,12 +4,6 @@ import re
 # pip install python-docx
 text = """
 """
-# b = bytearray(b'')
-# for i in range(len(text)):
-#     if text[i] != ' ':
-# b.append(bytes(text[i],encoding='utf-8'))
-# print(text[i])
-# print(b.decode())
 li = text.split("\n")
 i = 0
 while i < (len(li) - 1):
