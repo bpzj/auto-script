@@ -253,6 +253,6 @@ def summary():
 
 if __name__ == '__main__':
     # create_table()
-    # save_today_stock_check_list(parse_to_list(get_clipboard()))
-    update_available_balance_and_actual_amount(parse_update(get_clipboard()))
+    save_today_stock_check_list(parse_to_list(get_clipboard()))
+    # update_available_balance_and_actual_amount(parse_update(get_clipboard()))
     # summary()
