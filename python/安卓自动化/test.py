@@ -1,0 +1,7 @@
+d.press("back")
+d.press("home")
+d.xpath('//*[@content-desc="文件夹 消费  29 条通知"]/android.widget.ImageView[1]').click()
+d(text="手机淘宝").click()
+d.press("back")
+d(text="瓜分10亿").click()
+d(text="领喵币").click()
