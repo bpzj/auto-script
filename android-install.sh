@@ -1,17 +1,7 @@
 #!/bin/bash
 
-# 全局变量
-input="N"
-# 通用校验输入的方法
-function checkInput() {
-    while true; do
-        read -t 60 -p "$1" input
-        case $input in
-            [YyNn]* ) break;;
-            * ) echo "Please enter Y/y/N/n .";;
-        esac
-    done
-}
+# 引用其他sh脚本中的函数
+source ./linux/confirmSoftware.sh
 
 # = 与 == 在 [ ] 中表示判断(字符串比较)时是等价的
 # 获取当前系统

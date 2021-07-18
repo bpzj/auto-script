@@ -9,7 +9,7 @@ def get_number(param):
         param = param[:param.index(mark)]
         start = param.index('<b>')
         end = param.index('</b>')
-        return param[start + 3:end].replace('）', '').replace(' ', '') + '-'
+        return param[start + 3:end].replace('）', '').replace(' ', '').replace(')', '').replace('）', '') + '-'
     else:
         return ''
 
@@ -25,6 +25,17 @@ def get_date(content):
         return None, content
 
 
+def get_date_from_title(title:str):
+    if "年" in title:
+        left = title[title.index("年")-4:]
+        if "日" in left:
+            return left[:left.index("日")+1]
+        elif "月" in left:
+            return left[:left.index("月")]
+    else:
+        return ''
+
+
 def get_date_number(date: str):
     if date:
         if ('日' in date):
@@ -37,12 +48,12 @@ def get_date_number(date: str):
             return ''
         no = date.replace('（', '').replace('）', '')
         no = no.replace('年', '.').replace('月', '.').replace('日', '')
-        no = no.replace('二十', '2').replace('廿', '2').replace('十', '1').replace('○', '0')
+        no = no.replace('三十', '3').replace('二十', '2').replace('廿', '2').replace('十', '1').replace('○', '0')
         no = no.replace('一', '1').replace('二', '2').replace('三', '3').replace('四', '4').replace('五', '5')
         no = no.replace('六', '6').replace('七', '7').replace('八', '8').replace('九', '9').replace('零', '0')
         return no + '-'
     else:
-        return ''
+        return False
 
 
 def get_title(html):
@@ -75,7 +86,7 @@ def store_as_tex(url):
     left = left[left.index('目录'):left.index('下一页')]
     next_htm = left[left.index('href="') + 6:left.index('" title=')]
     date, content = get_date(content)
-    date_no = get_date_number(date)
+    date_no = get_date_number(date) or get_date_number(get_date_from_title(title))
     with open(number + date_no + title + '.tex', 'wb') as f:
         f.write(r'\section{'.encode('utf-8') + title.encode('utf-8') + '}\n'.encode('utf-8'))
         if date:
@@ -85,6 +96,7 @@ def store_as_tex(url):
 
 
 url = '1-029.htm'
+url = '5-001.htm'
 while url:
     print(url + ' start')
     url = store_as_tex(url)
