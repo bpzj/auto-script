@@ -31,22 +31,25 @@ def get_date_from_title(title:str):
         if "日" in left:
             return left[:left.index("日")+1]
         elif "月" in left:
-            return left[:left.index("月")]
+            return left[:left.index("月")+1]
+        elif "年" in left:
+            return left[:left.index("年")+1]
     else:
         return ''
 
 
 def get_date_number(date: str):
     if date:
-        if ('日' in date):
+        if '日' in date:
             date = date[:date.index('日')]
-        elif ('月' in date):
+        elif '月' in date:
             date = date[:date.index('月')]
-        elif ('年' in date):
+        elif '年' in date:
             date = date[:date.index('年')]
         else:
             return ''
         no = date.replace('（', '').replace('）', '')
+        no = no.replace('三十日', '30').replace('二十日', '20')
         no = no.replace('年', '.').replace('月', '.').replace('日', '')
         no = no.replace('三十', '3').replace('二十', '2').replace('廿', '2').replace('十', '1').replace('○', '0')
         no = no.replace('一', '1').replace('二', '2').replace('三', '3').replace('四', '4').replace('五', '5')
@@ -86,17 +89,19 @@ def store_as_tex(url):
     left = left[left.index('目录'):left.index('下一页')]
     next_htm = left[left.index('href="') + 6:left.index('" title=')]
     date, content = get_date(content)
-    date_no = get_date_number(date) or get_date_number(get_date_from_title(title))
-    with open(number + date_no + title + '.tex', 'wb') as f:
-        f.write(r'\section{'.encode('utf-8') + title.encode('utf-8') + '}\n'.encode('utf-8'))
+    date = date or get_date_from_title(title)
+    date_no = get_date_number(date)
+    file_name = '5-' + number + date_no + title + '.tex'
+    with open(file_name, 'wb') as f:
+        f.write(r'\section['.encode('utf-8') + title.encode('utf-8') + ']{'.encode('utf-8') + title.replace('（'+date+'）','').encode('utf-8')+'}\n'.encode('utf-8'))
         if date:
-            f.write(r'\datesubtitle{'.encode() + date.encode() + '}\n'.encode())
+            f.write(r'\datesubtitle{（'.encode() + date.encode() + '）}\n'.encode())
         f.write(content.encode('utf-8'))
     return next_htm
 
 
 url = '1-029.htm'
-url = '5-001.htm'
+url = '5-026.htm'
 while url:
     print(url + ' start')
     url = store_as_tex(url)
