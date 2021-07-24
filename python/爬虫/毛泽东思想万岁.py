@@ -1,4 +1,4 @@
-import requests
+import requests,re
 
 prefix = 'https://www.marxists.org/chinese/maozedong/1968/'
 
@@ -26,14 +26,11 @@ def get_date(content):
 
 
 def get_date_from_title(title:str):
-    if "年" in title:
-        left = title[title.index("年")-4:]
-        if "日" in left:
-            return left[:left.index("日")+1]
-        elif "月" in left:
-            return left[:left.index("月")+1]
-        elif "年" in left:
-            return left[:left.index("年")+1]
+    num = r'[一二三四五六七八九十]'
+    pattern = re.compile(num + r'{2,4}年' + num + '{0,2}月?' + num + '{0,3}日?')
+    l = pattern.findall(title)
+    if len(l) > 0:
+        return l[0]
     else:
         return ''
 
@@ -56,7 +53,7 @@ def get_date_number(date: str):
         no = no.replace('六', '6').replace('七', '7').replace('八', '8').replace('九', '9').replace('零', '0')
         return no + '-'
     else:
-        return False
+        return ''
 
 
 def get_title(html):
@@ -91,7 +88,7 @@ def store_as_tex(url):
     date, content = get_date(content)
     date = date or get_date_from_title(title)
     date_no = get_date_number(date)
-    file_name = '5-' + number + date_no + title + '.tex'
+    file_name = '5-' + number + date_no + title.replace('/','').replace('?','？') + '.tex'
     with open(file_name, 'wb') as f:
         f.write(r'\section['.encode('utf-8') + title.encode('utf-8') + ']{'.encode('utf-8') + title.replace('（'+date+'）','').encode('utf-8')+'}\n'.encode('utf-8'))
         if date:
@@ -101,7 +98,7 @@ def store_as_tex(url):
 
 
 url = '1-029.htm'
-url = '5-026.htm'
+url = '5-327.htm'
 while url:
     print(url + ' start')
     url = store_as_tex(url)
