@@ -58,13 +58,13 @@ def get_date_number(date: str):
 
 def get_title(html):
     title = html[:html.index('1968年汉版《毛泽东思想万岁》')]
-    title = title[title.index('<title>') + 7:title.index('</title>')]
+    title = title[title.index('<title>') + 7:title.index('</title>')].replace('○','〇')
     return title
 
 
 def store_as_tex(url):
     res = requests.get(prefix + url)
-    html = res.content.decode('gbk')
+    html = res.content.decode('GB18030')
     title = get_title(html)
 
     left = html[html.index('1968年汉版《毛泽东思想万岁》'):]
@@ -83,22 +83,23 @@ def store_as_tex(url):
     content = content.replace('&nbsp;', '')
     content = content.replace('<p><font face="宋体">', '')
 
-    left = left[left.index('目录'):left.index('下一页')]
-    next_htm = left[left.index('href="') + 6:left.index('" title=')]
     date, content = get_date(content)
     date = date or get_date_from_title(title)
     date_no = get_date_number(date)
-    file_name = '5-' + number + date_no + title.replace('/','').replace('?','？') + '.tex'
+    file_name = '1-' + number + date_no + title.replace('/','').replace('?','？') + '.tex'
     with open(file_name, 'wb') as f:
         f.write(r'\section['.encode('utf-8') + title.encode('utf-8') + ']{'.encode('utf-8') + title.replace('（'+date+'）','').encode('utf-8')+'}\n'.encode('utf-8'))
         if date:
             f.write(r'\datesubtitle{（'.encode() + date.encode() + '）}\n'.encode())
         f.write(content.encode('utf-8'))
+
+    left = left[left.index('目录'):left.index('下一页')]
+    next_htm = left[left.index('href="') + 6:left.index('" title=')]
     return next_htm
 
 
 url = '1-029.htm'
-url = '5-327.htm'
+url = '1-121.htm'
 while url:
     print(url + ' start')
     url = store_as_tex(url)

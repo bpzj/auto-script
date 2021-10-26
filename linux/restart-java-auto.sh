@@ -12,6 +12,7 @@ if [ ! -f $1 ] ; then
   echo "文件不存在"
   exit 0
 fi
+# ${string##*chars}	从 string 字符串最后一次出现 *chars 的位置开始，截取 *chars 右边的所有字符。
 if [[ ! ${1##*.} == "jar" ]] ; then
   echo "文件不是jar文件"
   exit 0
