@@ -2,17 +2,32 @@
 # pip install weditor  安装
 # python -m weditor 开启浏览器，开启手机调试
 
+
 import time
-def click_then_back(pos: tuple, times: int):
-    for i in range(times):
-        d.click(*pos)
-        time.sleep(30)
-        d.press('back')
-        time.sleep(8)
+
+def click_auto_once(t):
+    if d(text=t).exists:
+        d(text=t).click()
+        time.sleep(5)
+        if d(text='亲，访问被拒绝').exists:
+            d.press("back")
+            time.sleep(0.05)
+            d.press("back")
+            time.sleep(5)
+            click_auto_once(t)
+        else:
+            time.sleep(20)
+            d.press('back')
+            time.sleep(8)
 
 
-share_page_line_3 = (0.852, 0.687)
-share_page_line_4 = (0.791, 0.756)
-share_page_line_5 = (0.791, 0.846)
+def click_auto_times(t, times: int):
+    if d(text=t).exists:
+        for i in range(times):
+            click_auto_once(t)
 
-click_then_back(share_page_line_3,30)
+
+click_auto_times('去浏览',30)
+
+click_auto_times('去完成',30)
+
