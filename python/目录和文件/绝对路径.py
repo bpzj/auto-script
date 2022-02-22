@@ -3,7 +3,7 @@ import os
 
 def get_dir():
 
-    # 获取 本python文件的 路径, 不论调用本方法的是哪个文件
+    # 获取 本python文件的 在哪个问价夹, 不论调用本方法的是哪个文件
     path1 = os.path.dirname(__file__)
     print(path1)
 
